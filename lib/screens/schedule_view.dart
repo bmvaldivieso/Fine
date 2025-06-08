@@ -1,22 +1,13 @@
 // schedule_view.dart
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lms_english_app/utils/navigation_helper.dart';
 import '../widgets/schedule_card.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class ScheduleView extends StatelessWidget {
   const ScheduleView({super.key});
-
-  void _onTabTapped(BuildContext context, int index) {
-    if (index == 0) {
-      Navigator.pushNamed(context, '/home');
-    } else if (index == 1) {
-      Navigator.pushNamed(context, '/course');
-    } else if (index == 2) {
-      Navigator.pushNamed(context, '/messages');
-    } else if (index == 3) {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +63,15 @@ class ScheduleView extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  for (final day in ['Lun', 'Mar', 'Mi', 'Ju', 'Vie'])
+                  for (final day in [
+                    'Lun',
+                    'Mar',
+                    'Mi',
+                    'Ju',
+                    'Vie',
+                    'Sab',
+                    'Dom',
+                  ])
                     Container(
                       margin: EdgeInsets.only(right: screenWidth * 0.02),
                       padding: EdgeInsets.symmetric(
@@ -82,7 +81,7 @@ class ScheduleView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: day == 'Lun'
                             ? const Color(0xFFFF5177)
-                            : Colors.black.withOpacity(0.3),
+                            : Color(0xFF2042A6),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Center(
@@ -123,7 +122,9 @@ class ScheduleView extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 3,
-        onTap: (index) => _onTabTapped(context, index),
+        onTap: (index) {
+          handleBottomNavTap(context, index);
+        },
       ),
     );
   }

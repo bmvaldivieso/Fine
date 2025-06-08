@@ -45,11 +45,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         "Course",
                         screenWidth,
                         isActive: _selectedItem == "Course",
-                        onTap: () => _onItemTap("Course", () {
-                          Navigator.pop(context);
-                        }),
+                        onTap: () => _onItemTap("Course", null),
                       ),
-                      SizedBox(height: screenHeight * 0.012),
                       buildDrawerItem(
                         Iconsax.book,
                         "Homework",

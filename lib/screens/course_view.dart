@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lms_english_app/utils/navigation_helper.dart';
 import '../widgets/live_card.dart';
 import '../widgets/activity_card.dart';
 import '../widgets/simple_card.dart';
@@ -7,17 +8,6 @@ import '../widgets/custom_bottom_nav_bar.dart';
 
 class CourseView extends StatelessWidget {
   const CourseView({super.key});
-
-  void _onTabTapped(BuildContext context, int index) {
-    if (index == 0) {
-      Navigator.pushNamed(context, '/home');
-    } else if (index == 1) {
-    } else if (index == 2) {
-      Navigator.pushNamed(context, '/messages');
-    } else if (index == 3) {
-      Navigator.pushNamed(context, '/schedule');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +132,9 @@ class CourseView extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 1,
-        onTap: (index) => _onTabTapped(context, index),
+        onTap: (index) {
+          handleBottomNavTap(context, index);
+        },
       ),
     );
   }

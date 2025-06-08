@@ -8,3 +8,6 @@ export 'widgets/schedule_card.dart';
 export 'screens/schedule_view.dart';
 export 'widgets/custom_bottom_nav_bar.dart';
 export 'screens/notes_view.dart';
+export 'widgets/level_selector.dart';
+export 'widgets/notes_header.dart';
+export 'widgets/grades_table.dart';

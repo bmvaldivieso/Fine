@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../widgets/custom_drawer.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
+import 'package:lms_english_app/utils/navigation_helper.dart';
+import 'package:lms_english_app/widgets/custom_bottom_nav_bar.dart';
+import 'package:lms_english_app/widgets/custom_drawer.dart';
+import '../widgets/notes_header.dart';
+import '../widgets/level_selector.dart';
+import '../widgets/grades_table.dart';
 
 class NotesView extends StatelessWidget {
   const NotesView({super.key});
-
-  void _onTabTapped(BuildContext context, int index) {
-    if (index == 0) {
-      Navigator.pushNamed(context, '/home');
-    } else if (index == 1) {
-    } else if (index == 2) {
-      Navigator.pushNamed(context, '/messages');
-    } else if (index == 3) {
-      Navigator.pushNamed(context, '/schedule');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,90 +16,66 @@ class NotesView extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 127, 150, 228),
+      drawer: const CustomDrawer(),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D1C45),
-        title: const Text(
-          'Notes',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
-      ),
-      drawer: const CustomDrawer(),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 1,
-        onTap: (index) => _onTabTapped(context, index),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.05,
-          vertical: screenHeight * 0.03,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            const Text(
-              'My Notes',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0D1C45),
-              ),
+            Icon(
+              Iconsax.document,
+              color: Colors.white,
+              size: screenWidth * 0.06,
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 3, // más adelante puedes cargar desde base de datos
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Iconsax.note_text, color: Color(0xFF0D1C45)),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Note Title',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Short description or preview of the note...',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(
-                          Iconsax.arrow_right_34,
-                          color: Colors.black45,
-                        ),
-                      ],
-                    ),
-                  );
-                },
+            SizedBox(width: screenWidth * 0.02),
+            Text(
+              'Notes',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenWidth * 0.05,
               ),
             ),
           ],
         ),
+        actions: [
+          CircleAvatar(
+            radius: screenWidth * 0.05,
+            backgroundImage: const AssetImage('assets/user.jpg'),
+          ),
+          SizedBox(width: screenWidth * 0.04),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.05,
+          vertical: screenHeight * 0.02,
+        ),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const NotesHeader(),
+              SizedBox(height: screenHeight * 0.02),
+              const LevelSelector(),
+              SizedBox(height: screenHeight * 0.02),
+              const GradesTable(),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 0,
+        onTap: (index) {
+          handleBottomNavTap(context, index);
+        },
       ),
     );
   }
