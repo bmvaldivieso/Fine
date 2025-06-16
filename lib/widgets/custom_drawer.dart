@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../widgets/drawer_item.dart';
-import '../screens/notes_view.dart';
+import 'package:get/get.dart';
+import '../features/home/controllers/home_Controller.dart';
+
+
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -110,12 +113,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         isActive: _selectedItem == "Notes",
                         onTap: () => _onItemTap("Notes", () {
                           Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const NotesView(),
-                            ),
-                          );
+                          Get.offAllNamed('/home?index=4');
+
                         }),
                       ),
                     ],

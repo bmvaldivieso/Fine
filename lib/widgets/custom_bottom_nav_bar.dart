@@ -13,10 +13,12 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safeIndex = currentIndex > 3 ? 0 : currentIndex;
+
     return BottomNavigationBar(
       selectedItemColor: const Color(0xFFFF5177),
       unselectedItemColor: Colors.black,
-      currentIndex: currentIndex,
+      currentIndex: safeIndex,
       onTap: onTap,
       items: const [
         BottomNavigationBarItem(icon: Icon(Iconsax.home), label: ''),
@@ -27,3 +29,4 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 }
+

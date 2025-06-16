@@ -1,6 +1,8 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
-
-import 'package:lms_english_app/routes.dart';
+import 'package:get/get.dart';
+import 'core/bindings/home_binding.dart';
+import 'features/home/views/home_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,26 +11,25 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'English LMS',
-      theme: ThemeData.light().copyWith(
-        appBarTheme: const AppBarTheme(
-          color: Colors.white,
-          elevation: 0,
-          titleTextStyle: TextStyle(color: Colors.black, fontSize: 22),
-          iconTheme: IconThemeData(color: Colors.blue),
+      initialBinding: HomeBinding(),
+      initialRoute: '/home',
+      getPages: [
+        GetPage(
+          name: '/home',
+          page: () {
+            final indexParam = int.tryParse(Get.parameters['index'] ?? '0') ?? 0;
+            return HomeView(initialIndex: indexParam);
+          },
         ),
-      ),
-      initialRoute: '/course',
-      routes: {
-        '/course': (context) => const CourseView(),
-        '/schedule': (context) => const ScheduleView(),
-        '/notes': (context) => const NotesView(),
-      },
+        // GetPage(name: '/login', page: () => LoginView()),
+        // GetPage(name: '/settings', page: () => SettingsView()),
+      ],
     );
   }
 }

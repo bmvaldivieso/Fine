@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lms_english_app/utils/navigation_helper.dart';
-import '../widgets/live_card.dart';
-import '../widgets/activity_card.dart';
-import '../widgets/simple_card.dart';
-import '../widgets/custom_drawer.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
+import '../../../widgets/live_card.dart';
+import '../../../widgets/activity_card.dart';
+import '../../../widgets/simple_card.dart';
+import '../../../widgets/custom_drawer.dart';
+import '../../../widgets/custom_bottom_nav_bar.dart';
 
 class CourseView extends StatelessWidget {
   const CourseView({super.key});
@@ -129,12 +129,6 @@ class CourseView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 1,
-        onTap: (index) {
-          handleBottomNavTap(context, index);
-        },
       ),
     );
   }

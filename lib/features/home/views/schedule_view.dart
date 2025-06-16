@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:lms_english_app/utils/navigation_helper.dart';
-import '../widgets/schedule_card.dart';
-import '../widgets/custom_drawer.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
+import '../../../widgets/schedule_card.dart';
+import '../../../widgets/custom_drawer.dart';
+import '../../../widgets/custom_bottom_nav_bar.dart';
 
 class ScheduleView extends StatelessWidget {
   const ScheduleView({super.key});
@@ -119,12 +119,6 @@ class ScheduleView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 3,
-        onTap: (index) {
-          handleBottomNavTap(context, index);
-        },
       ),
     );
   }

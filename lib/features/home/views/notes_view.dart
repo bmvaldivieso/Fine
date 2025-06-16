@@ -3,9 +3,9 @@ import 'package:iconsax/iconsax.dart';
 import 'package:lms_english_app/utils/navigation_helper.dart';
 import 'package:lms_english_app/widgets/custom_bottom_nav_bar.dart';
 import 'package:lms_english_app/widgets/custom_drawer.dart';
-import '../widgets/notes_header.dart';
-import '../widgets/level_selector.dart';
-import '../widgets/grades_table.dart';
+import '../../../widgets/notes_header.dart';
+import '../../../widgets/level_selector.dart';
+import '../../../widgets/grades_table.dart';
 
 class NotesView extends StatelessWidget {
   const NotesView({super.key});
@@ -70,12 +70,6 @@ class NotesView extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 0,
-        onTap: (index) {
-          handleBottomNavTap(context, index);
-        },
       ),
     );
   }
