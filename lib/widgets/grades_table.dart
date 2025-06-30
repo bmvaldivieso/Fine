@@ -9,7 +9,7 @@ class GradesTable extends StatelessWidget {
       fontWeight: FontWeight.bold,
       color: Colors.white,
     );
-    const rowStyle = TextStyle(fontSize: 14);
+    // const rowStyle = TextStyle(fontSize: 14);
 
     return Container(
       decoration: BoxDecoration(

@@ -29,6 +29,7 @@ class HomeView extends GetView<HomeController> {
         controller.changeTab(initialIndex);
       }
     });
+    ///falta appbar//
     return Scaffold(
       drawer: const CustomDrawer(),
       body: Obx(() => _pages[controller.currentIndex.value]),

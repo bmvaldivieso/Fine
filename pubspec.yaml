@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   get: ^4.6.6
+  flutter_svg: ^2.0.10+1
   flutter:
     sdk: flutter
 
@@ -25,5 +26,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - lib/assets/images/chica.png
+    - lib/assets/images/gorro.png
+    - lib/assets/icons/clock.svg
+    - lib/assets/icons/message.svg
+    - lib/assets/icons/school.svg
+    - lib/assets/icons/home.svg
 

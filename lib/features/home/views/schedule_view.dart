@@ -35,10 +35,6 @@ class ScheduleView extends StatelessWidget {
           ],
         ),
         actions: [
-          CircleAvatar(
-            radius: screenWidth * 0.05,
-            backgroundImage: const AssetImage('assets/user.jpg'),
-          ),
           SizedBox(width: screenWidth * 0.04),
         ],
       ),
