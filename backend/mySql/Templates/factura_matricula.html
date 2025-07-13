@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Factura de Matrícula</title>
+</head>
+
+<body>
+    <h2>Factura de Matrícula</h2>
+    <p><strong>Estudiante:</strong> {{ estudiante.nombres_apellidos }}</p>
+    <p><strong>Programa:</strong> {{ componente.get_programa_academico_display }}</p>
+    <p><strong>Curso:</strong> {{ componente.nombre }}</p>
+    <p><strong>Horario:</strong> {{ componente.horario }}</p>
+    <p><strong>Periodo:</strong> {{ componente.periodo }}</p>
+    <p><strong>Fecha de Matrícula:</strong> {{ matricula.fecha_matricula }}</p>
+    <p><strong>Precio:</strong> ${{ componente.precio }}</p>
+    <hr>
+    <p>Gracias por confiar en nosotros. Para cualquier consulta, contáctanos.</p>
+</body>
+
+</html>

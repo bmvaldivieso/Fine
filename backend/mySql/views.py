@@ -28,6 +28,10 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
 
 
 
@@ -280,6 +284,163 @@ class RegistroCompletoView(APIView):
         except Exception as e:
             logger.error(f"Error durante el registro completo: {e}")
             return Response({'success': False, 'error': 'Error al registrar los datos'}, status=400)
+
+
+
+class ComponentesDisponiblesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        estudiante = get_object_or_404(Estudiante, user=request.user)
+        componentes = Componente.objects.filter(
+            programa_academico=estudiante.programa_academico,
+            cupos_disponibles__gt=0
+        ).order_by('nombre')
+
+        data = [{
+            'id': componente.id,
+            'nombre': componente.nombre,
+            'programa_academico': componente.programa_academico,
+            'precio': componente.precio,
+            'periodo': componente.periodo,
+            'horario': componente.horario,
+            'cupos_disponibles': componente.cupos_disponibles,
+        } for componente in componentes]
+
+        return Response({'componentes': data})
+
+
+class CrearMatriculaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        estudiante = get_object_or_404(Estudiante, user=request.user)
+        componente_id = request.data.get('componente_id')
+
+        # Validar componente
+        try:
+            componente = Componente.objects.get(id=componente_id)
+        except Componente.DoesNotExist:
+            return Response({'error': 'Componente no encontrado'}, status=404)
+
+        # Verificar disponibilidad de cupos
+        if componente.cupos_disponibles <= 0:
+            return Response({'error': 'Este componente no tiene cupos disponibles'}, status=400)
+
+        # Verificar si ya existe una matrícula activa o confirmada para este estudiante
+        if Matricula.objects.filter(
+            estudiante=estudiante,
+            estado__in=['activa', 'confirmada']
+        ).exists():
+            return Response({'error': 'Ya tienes una matrícula activa o confirmada'}, status=400)
+
+        # Verificar si ya está matriculado en el mismo componente
+        if Matricula.objects.filter(
+            estudiante=estudiante,
+            componente_cursado=componente
+        ).exists():
+            return Response({'error': 'Ya estás matriculado en este componente'}, status=400)
+
+        try:
+            # Crear matrícula
+            matricula = Matricula.objects.create(
+                estudiante=estudiante,
+                componente_cursado=componente,
+                metodo_pago=request.data.get('metodo_pago'),
+                medio_entero=request.data.get('medio_entero'),
+                costo_matricula=componente.precio,
+                estado='confirmada'
+            )
+
+            # Decrementar cupos
+            componente.cupos_disponibles -= 1
+            componente.save()
+
+            # Enviar factura y credenciales
+            self.enviar_factura(estudiante, componente, matricula)
+            self.enviar_credenciales(estudiante)
+
+            return Response({'message': 'Matrícula completada exitosamente'}, status=200)
+
+        except Exception as e:
+            logger.error(f"Error al crear matrícula: {e}")
+            return Response({'error': 'Ocurrió un error al crear la matrícula'}, status=500)
+
+    def enviar_factura(self, estudiante, componente, matricula):
+        subject = 'Factura de Matrícula'
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [estudiante.email]
+
+        html_message = render_to_string('factura_matricula.html', {
+            'estudiante': estudiante,
+            'componente': componente,
+            'matricula': matricula,
+        })
+
+        try:
+            send_mail(subject, '', from_email, to_email, html_message=html_message)
+            logger.info(f"Factura enviada a {estudiante.email}")
+        except Exception as e:
+            logger.error(f"Error al enviar la factura: {e}")
+
+    def enviar_credenciales(self, estudiante):
+        correo_utpl = f"{estudiante.user.username}@utpl.edu.ec"
+        contraseña = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
+
+        subject = 'Tus Credenciales Académicas UTPL'
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [estudiante.email]
+
+        html_message = render_to_string('credenciales_utpl.html', {
+            'correo_utpl': correo_utpl,
+            'contraseña': contraseña,
+            'estudiante': estudiante
+        })
+
+        try:
+            send_mail(subject, '', from_email, to_email, html_message=html_message)
+            logger.info(f"Credenciales enviadas a {estudiante.email}")
+        except Exception as e:
+            logger.error(f"Error al enviar las credenciales: {e}")
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def registrar_datos_pago(request):
+    try:
+        estudiante = request.user.perfil_estudiante
+    except Estudiante.DoesNotExist:
+        return Response({'error': 'No se encontró perfil de estudiante vinculado'}, status=400)
+
+    componente_id = request.data.get('componente_id')
+    metodo = request.data.get('metodo_pago')
+
+    if not componente_id or not metodo:
+        return Response({'error': 'componente_id y metodo_pago son obligatorios'}, status=400)
+
+    try:
+        componente = Componente.objects.get(id=componente_id)
+    except Componente.DoesNotExist:
+        return Response({'error': 'Componente no encontrado'}, status=404)
+
+    datos = DatosPagoMatricula.objects.create(
+        estudiante=estudiante,
+        componente=componente,
+        metodo_pago=metodo,
+        referencia=request.data.get('referencia'),
+        monto=request.data.get('monto'),
+        fecha_deposito=request.data.get('fecha_deposito'),
+        id_depositante=request.data.get('id_depositante'),
+        nombre_tarjeta=request.data.get('nombre_tarjeta'),
+        numero_tarjeta=request.data.get('numero_tarjeta'),
+        vencimiento=request.data.get('vencimiento'),
+        cvv=request.data.get('cvv'),
+    )
+
+    return Response({"mensaje": "Datos de pago guardados correctamente"})
+
 
 
 

@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 import logging
 
 logger = logging.getLogger(__name__)
 
+# Código de verificación por correo
 class CodigoVerificacionEmail(models.Model):
     correo = models.EmailField()
     codigo = models.CharField(max_length=6)
@@ -16,16 +16,12 @@ class CodigoVerificacionEmail(models.Model):
     def __str__(self):
         return f"{self.correo} - {self.codigo} - expira en {self.expiracion}"
 
-    
-
     def esta_expirado(self):
-        logger.warning(f"Verificando expiración del código: {self.codigo} para {self.correo}")
+        logger.info(f"Verificando expiración del código: {self.codigo} para {self.correo}")
         return timezone.now() > self.expiracion
-     
-    
 
 
-
+# Estudiante
 class Estudiante(models.Model):
     TIPO_IDENTIFICACION = [
         ('cedula', 'Cédula'),
@@ -86,13 +82,10 @@ class Estudiante(models.Model):
         return self.nombres_apellidos
 
 
-
-
+# Representante
 class Representante(models.Model):
     estudiante = models.OneToOneField(Estudiante, on_delete=models.CASCADE, related_name="representante")
-
     emitir_factura_al_estudiante = models.BooleanField(default=False)
-
     tipo_identificacion = models.CharField(max_length=20, choices=Estudiante.TIPO_IDENTIFICACION)
     identificacion = models.CharField(max_length=30, unique=True)
     razon_social = models.CharField(max_length=150)
@@ -100,7 +93,6 @@ class Representante(models.Model):
     email = models.EmailField(unique=True)
     celular = models.CharField(max_length=15, unique=True)
     telefono_convencional = models.CharField(max_length=15, blank=True, null=True)
-
     sexo = models.CharField(max_length=1, choices=Estudiante.GENERO)
     estado_civil = models.CharField(max_length=20, choices=[
         ('soltero', 'Soltero'),
@@ -121,8 +113,22 @@ class Representante(models.Model):
         return self.razon_social
 
 
+# Componente académico (paralelo)
+class Componente(models.Model):
+    PROGRAMA_ACADEMICO_CHOICES = Estudiante.PROGRAMAS_ACADEMICOS
+
+    nombre = models.CharField(max_length=255)
+    programa_academico = models.CharField(max_length=50, choices=PROGRAMA_ACADEMICO_CHOICES)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    periodo = models.CharField(max_length=50)
+    horario = models.CharField(max_length=100)
+    cupos_disponibles = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.programa_academico}) - {self.periodo}"
 
 
+# Matrícula
 class Matricula(models.Model):
     METODO_PAGO_CHOICES = [
         ('deposito', 'Depósito'),
@@ -131,29 +137,78 @@ class Matricula(models.Model):
     ]
 
     MEDIO_ENTERO_CHOICES = [
-        ('redes', 'Redes sociales'),
-        ('web', 'Página Web'),
-        ('asesores', 'Contacto con Asesores Comerciales'),
-        ('oficina', 'Oficina'),
-        ('radio', 'Radio'),
-        ('ferias', 'Ferias y/o Eventos'),
-        ('otros', 'Otros'),
+        ('redes_sociales', 'Redes Sociales'),
+        ('pagina_web', 'Página Web'),
+        ('referido', 'Referido'),
+        ('otro', 'Otro'),
+    ]
+
+    ESTADO_MATRICULA_CHOICES = [
+        ('activa', 'Activa'),
+        ('completada', 'Completada'),
+        ('inactiva', 'Inactiva'),
+        ('abandonada', 'Abandonada'),
+        ('pendiente_pago', 'Pendiente de Pago'),
+        ('confirmada', 'Confirmada'),
     ]
 
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="matriculas")
-    nombre = models.CharField(max_length=100)
-    programa = models.CharField(max_length=100)
-    periodo = models.CharField(max_length=50)
-    horario = models.CharField(max_length=50)
-    paralelo = models.CharField(max_length=10)
-    establecimiento = models.CharField(max_length=100)
-    cupos = models.PositiveIntegerField()
-
-    metodo_pago = models.CharField(max_length=20, choices=METODO_PAGO_CHOICES)
-    cuotas_pagar = models.PositiveIntegerField()
-    medio_entero = models.CharField(max_length=30, choices=MEDIO_ENTERO_CHOICES)
-
-    fecha_matricula = models.DateTimeField(auto_now_add=True)
+    componente_cursado = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, blank=True)
+    metodo_pago = models.CharField(max_length=50, choices=METODO_PAGO_CHOICES)
+    medio_entero = models.CharField(max_length=50, choices=MEDIO_ENTERO_CHOICES)
+    fecha_matricula = models.DateField(auto_now_add=True)
+    costo_matricula = models.DecimalField(max_digits=10, decimal_places=2)
+    observaciones = models.TextField(blank=True, null=True)
+    activa = models.BooleanField(default=True)
+    estado = models.CharField(max_length=20, choices=ESTADO_MATRICULA_CHOICES, default='pendiente_pago')
+    cuotas = models.CharField(max_length=10, default='1')
 
     def __str__(self):
-        return f"Matricula de {self.estudiante.nombres_apellidos} - {self.programa} ({self.periodo})"
+        return f"Matrícula de {self.estudiante.nombres_apellidos} en {self.componente_cursado.nombre if self.componente_cursado else 'N/A'}"
+
+
+# Calificaciones
+class Nota(models.Model):
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name='notas')
+    componente = models.ForeignKey(Componente, on_delete=models.CASCADE, related_name='notas_asociadas')
+    docente = models.CharField(max_length=255)
+    nota_final = models.DecimalField(max_digits=5, decimal_places=2)
+    inasistencias = models.PositiveIntegerField(default=0)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('estudiante', 'componente')
+
+    def __str__(self):
+        return f"Nota de {self.estudiante.nombres_apellidos} en {self.componente.nombre}: {self.nota_final}"
+
+
+# Datos de pago de matrícula
+class DatosPagoMatricula(models.Model):
+    METODOS = [
+        ('deposito', 'Depósito'),
+        ('transferencia', 'Transferencia'),
+        ('tarjeta', 'Tarjeta'),
+    ]
+
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    componente = models.ForeignKey(Componente, on_delete=models.CASCADE)
+    metodo_pago = models.CharField(max_length=20, choices=METODOS)
+
+    # Para depósito y transferencia
+    referencia = models.CharField(max_length=100, blank=True, null=True)
+    monto = models.CharField(max_length=50, blank=True, null=True)
+    fecha_deposito = models.CharField(max_length=50, blank=True, null=True)
+    id_depositante = models.CharField(max_length=100, blank=True, null=True)
+
+    # Para tarjeta
+    nombre_tarjeta = models.CharField(max_length=100, blank=True, null=True)
+    numero_tarjeta = models.CharField(max_length=30, blank=True, null=True)
+    vencimiento = models.CharField(max_length=10, blank=True, null=True)
+    cvv = models.CharField(max_length=10, blank=True, null=True)
+
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.estudiante} - {self.metodo_pago}"
+
