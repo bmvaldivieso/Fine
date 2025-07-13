@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lms_english_app/features/matricula/views/componentes_view.dart';
+import 'package:lms_english_app/features/matricula/views/detalle_curso_view.dart';
+import 'package:lms_english_app/features/matricula/views/matricula_inicio_view.dart';
 import 'package:provider/provider.dart';
 import 'core/bindings/home_binding.dart';
 import 'features/auth/providers/formProvider.dart';
@@ -7,7 +10,6 @@ import 'features/auth/services/tokkenAccesLogin.dart';
 import 'features/home/views/home_view.dart';
 import 'features/auth/login/login_auth.dart';
 import 'features/home/controllers/home_Controller.dart';
-
 
 void main() {
   Get.put(HomeController());
@@ -52,20 +54,20 @@ class MainApp extends StatelessWidget {
             GetPage(
               name: '/home',
               page: () {
-                final indexParam = int.tryParse(Get.parameters['index'] ?? '0') ?? 0;
+                final indexParam =
+                    int.tryParse(Get.parameters['index'] ?? '0') ?? 0;
                 return HomeView(initialIndex: indexParam);
               },
             ),
             GetPage(name: '/login', page: () => LoginScreen()),
+            GetPage(
+                name: '/detalle-curso', page: () => const DetalleCursoView()),
+            GetPage(
+                name: '/matricula', page: () => const MatriculaInicioView()),
+            GetPage(name: '/paralelos', page: () => const ComponentesView()),
           ],
         );
       },
     );
   }
 }
-
-
-
-
-
-

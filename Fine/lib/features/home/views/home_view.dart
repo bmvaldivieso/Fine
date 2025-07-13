@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lms_english_app/features/matricula/views/componentes_view.dart';
+import 'package:lms_english_app/features/matricula/views/detalle_curso_view.dart';
+import 'package:lms_english_app/features/matricula/views/matricula_inicio_view.dart';
 import '../../../shared/widgets/notMatricula.dart';
 import '../controllers/home_Controller.dart';
 import 'course_view.dart';
@@ -23,7 +26,10 @@ class HomeView extends GetView<HomeController> {
     //drawer
     NotesView(),
     //validacionMatricula la pantalla es llamada si no hay matricula//
-    EnrollPromptView(),
+    //EnrollPromptView(),
+    MatriculaInicioView(),
+    ComponentesView(),
+    DetalleCursoView(),
   ];
 
   @override

@@ -4,7 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthServiceLogin {
 
-  final String _baseUrl = 'http://10.0.2.2:8000/api';
+  //final String _baseUrl = 'http://10.0.2.2:8000/api';
+  final String _baseUrl = 'http://localhost:8000/api';
   final String baseUrlIP = "http://192.168.100.28:8000/api";
 
   final _storage = const FlutterSecureStorage();

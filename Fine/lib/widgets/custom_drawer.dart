@@ -52,6 +52,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         isActive: _selectedItem == "Course",
                         onTap: () => _onItemTap("Course", null),
                       ),
+                       buildDrawerItem(
+                        Iconsax.document,
+                        "Matricula",
+                        screenWidth,
+                        isActive: _selectedItem == "Matricula",
+                        onTap: () => _onItemTap("Matricula", () {
+                          Navigator.pop(context);
+                          _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+                        }),
+                      ),
                       buildDrawerItem(
                         Iconsax.book,
                         "Homework",

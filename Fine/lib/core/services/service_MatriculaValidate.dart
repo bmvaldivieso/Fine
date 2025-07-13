@@ -4,7 +4,8 @@ import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
 
 class MatService {
 
-  final String _baseUrl = 'http://10.0.2.2:8000/api';
+  //final String _baseUrl = 'http://10.0.2.2:8000/api';
+  final String _baseUrl = 'http://localhost:8000/api'; //Para chrome
   final String baseUrlIP = "http://192.168.100.28:8000/api";
 
   Future<bool> validarMatricula() async {
