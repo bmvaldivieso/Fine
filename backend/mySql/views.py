@@ -31,6 +31,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from .serializers import PerfilEstudianteSerializer
 
 
 
@@ -72,31 +73,6 @@ class ValidateMatriculaMixin:
             return False
 
         return Matricula.objects.filter(estudiante=estudiante).exists()
-
-
-
-
-
-
-
-
-#vista de ejemplo llamando a la clase matricula para valdar esta vista deberia devolve las notas
-#todavia no esta implementada la tabla notas
-
-class NotasView(APIView, ValidateMatriculaMixin):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        if not self.tiene_matricula(request):
-            logger.warning("El usuario no tiene matrícula actualmente.")
-            return Response({"detalle": "El usuario no tiene matrícula actualmente."}, status=400)
-        return Response({"detalle": "Notas preparadas."}, status=200)
-
-
-
-
-
-
 
 
 
@@ -442,7 +418,62 @@ def registrar_datos_pago(request):
     return Response({"mensaje": "Datos de pago guardados correctamente"})
 
 
+class NotasView(APIView, ValidateMatriculaMixin):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        if not self.tiene_matricula(request):
+            logger.warning("El usuario no tiene matrícula actualmente.")
+            return Response({"detalle": "El usuario no tiene matrícula actualmente."}, status=400)
+
+        try:
+            estudiante = Estudiante.objects.get(user=request.user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no encontrado'}, status=404)
+
+        notas = Nota.objects.filter(estudiante=estudiante)
+
+        if not notas.exists():
+            return Response([], status=200)
+
+        resultado = {}
+
+        for nota in notas:
+            componente_nombre = nota.componente.nombre
+            resultado.setdefault(componente_nombre, {'componente': componente_nombre, 'notas': []})
+
+            nota_bimestre = nota.calcular_nota_bimestre()
+            resultado[componente_nombre]['notas'].append({
+                'bimestre': nota.bimestre,
+                'tareas': nota.tareas,
+                'lecciones': nota.lecciones,
+                'grupales': nota.grupales,
+                'individuales': nota.individuales,
+                'inasistencias': nota.inasistencias,
+                'nota_bimestre': round(nota_bimestre, 2)
+            })
+
+        for comp in resultado.values():
+            bimestres = comp['notas']
+            if len(bimestres) == 2:
+                promedio = sum(b['nota_bimestre'] for b in bimestres) / 2
+                comp['nota_final'] = round(promedio, 2)
+
+        return Response(list(resultado.values()))
+      
+
+
+class PerfilEstudianteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            estudiante = Estudiante.objects.get(user=request.user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no encontrado'}, status=404)
+
+        serializer = PerfilEstudianteSerializer(estudiante)
+        return Response(serializer.data)
 
 
 

@@ -8,4 +8,5 @@ admin.site.register(Matricula)
 admin.site.register(Nota)
 admin.site.register(Componente)
 admin.site.register(DatosPagoMatricula)
+admin.site.register(Docente)
 

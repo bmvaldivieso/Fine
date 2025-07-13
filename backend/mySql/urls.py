@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView,DatosMongoView,normalDatosMongoView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago # Asegúrate de importar EspecialidadesView
+from .views import CustomTokenObtainPairView,DatosMongoView,normalDatosMongoView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView # Asegúrate de importar EspecialidadesView
 
 
 urlpatterns = [
@@ -8,11 +8,12 @@ urlpatterns = [
     path('mongoNormal/', normalDatosMongoView.as_view(), name='datos_mongo'),
     path('verif/', RecivValidateCodView.as_view(), name='reciv_cod'),
     path('registro/', RegistroCompletoView.as_view(), name='registro_completo'),
-    path('notas/', NotasView.as_view(), name='ver-notas'),
     path('mongo/', DatosMongoView.as_view(), name='datos_mongo'),
     path('componentes/', ComponentesDisponiblesView.as_view(), name='componentes_disponibles'),
     path('matricula/', CrearMatriculaView.as_view(), name='crear_matricula'),
     path('datos-pago/', registrar_datos_pago),
+    path('estudiante/perfil/', PerfilEstudianteView.as_view(), name='perfil-estudiante'),
+    path('notas/', NotasView.as_view(), name='notas'),
 
     
     #path('user-info/', UserInfoView.as_view(), name='user_info'),

@@ -1,67 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:lms_english_app/core/models/nota_bimestre_model.dart';
 
 class GradesTable extends StatelessWidget {
-  const GradesTable({super.key});
+  final List<NotaBimestre> notas;
+
+  const GradesTable({super.key, required this.notas});
 
   @override
   Widget build(BuildContext context) {
-    const headerStyle = TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    );
-    // const rowStyle = TextStyle(fontSize: 14);
+    const headerStyle =
+        TextStyle(fontWeight: FontWeight.bold, color: Colors.white);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF5A3ED1), Color(0xFF212092)],
-              ),
+                  colors: [Color(0xFF5A3ED1), Color(0xFF212092)]),
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Expanded(
-                  child: Center(child: Text("Categoria", style: headerStyle)),
-                ),
+                    child:
+                        Center(child: Text("Categoría", style: headerStyle))),
                 Expanded(
-                  child: Center(child: Text("1 Bimestre", style: headerStyle)),
-                ),
+                    child:
+                        Center(child: Text("1º Bimestre", style: headerStyle))),
                 Expanded(
-                  child: Center(child: Text("2 Bimestre", style: headerStyle)),
-                ),
+                    child:
+                        Center(child: Text("2º Bimestre", style: headerStyle))),
               ],
             ),
           ),
           const SizedBox(height: 10),
-          buildRow("Tareas", "22", "20"),
-          buildRow("Lecciones", "18", "18"),
-          buildRow("Grupales", "26", "20"),
-          buildRow("Individuales", "26", "27"),
-          buildRow("Recuperacion", "-", "-"),
-          buildRow("Final", "92", "85"),
-          const SizedBox(height: 15),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Nota Final: 91,5",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Color(0xFF2845B9),
-              ),
-            ),
+          buildRow(
+            "Tareas",
+            bimestreValue(notas, 1, (n) => n.tareas),
+            bimestreValue(notas, 2, (n) => n.tareas),
+          ),
+          buildRow(
+            "Lecciones",
+            bimestreValue(notas, 1, (n) => n.lecciones),
+            bimestreValue(notas, 2, (n) => n.lecciones),
+          ),
+          buildRow(
+            "Grupales",
+            bimestreValue(notas, 1, (n) => n.grupales),
+            bimestreValue(notas, 2, (n) => n.grupales),
+          ),
+          buildRow(
+            "Individuales",
+            bimestreValue(notas, 1, (n) => n.individuales),
+            bimestreValue(notas, 2, (n) => n.individuales),
+          ),
+          buildRow(
+            "Promedio",
+            bimestreValue(notas, 1, (n) => n.notaBimestre),
+            bimestreValue(notas, 2, (n) => n.notaBimestre),
           ),
         ],
       ),
@@ -80,5 +82,23 @@ class GradesTable extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String bimestreValue(
+    List<NotaBimestre> notas,
+    int bimestre,
+    double Function(NotaBimestre nota) extractor,
+  ) {
+    final nota = notas.firstWhere((n) => n.bimestre == bimestre,
+        orElse: () => NotaBimestre(
+              bimestre: bimestre,
+              tareas: 0,
+              lecciones: 0,
+              grupales: 0,
+              individuales: 0,
+              inasistencias: 0,
+              notaBimestre: 0,
+            ));
+    return extractor(nota).toStringAsFixed(0);
   }
 }

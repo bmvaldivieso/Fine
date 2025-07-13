@@ -169,18 +169,36 @@ class Matricula(models.Model):
 
 # Calificaciones
 class Nota(models.Model):
+    BIMESTRES = [(1, 'Primer Bimestre'), (2, 'Segundo Bimestre')]
+
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name='notas')
     componente = models.ForeignKey(Componente, on_delete=models.CASCADE, related_name='notas_asociadas')
-    docente = models.CharField(max_length=255)
-    nota_final = models.DecimalField(max_digits=5, decimal_places=2)
+    docente = models.ForeignKey('Docente', on_delete=models.SET_NULL, null=True, related_name='notas_docente')
+
+    bimestre = models.IntegerField(choices=BIMESTRES)
+    tareas = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    lecciones = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    grupales = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    individuales = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     inasistencias = models.PositiveIntegerField(default=0)
+
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('estudiante', 'componente')
+        unique_together = ('estudiante', 'componente', 'bimestre')
+
+    def calcular_nota_bimestre(self):
+        return round(
+            float(self.tareas) * 0.4 +
+            float(self.lecciones) * 0.2 +
+            float(self.grupales) * 0.2 +
+            float(self.individuales) * 0.2,
+            2
+    )
 
     def __str__(self):
-        return f"Nota de {self.estudiante.nombres_apellidos} en {self.componente.nombre}: {self.nota_final}"
+        return f"{self.estudiante.nombres_apellidos} - {self.componente.nombre} - Bimestre {self.bimestre}"
+
 
 
 # Datos de pago de matrícula
@@ -211,4 +229,16 @@ class DatosPagoMatricula(models.Model):
 
     def __str__(self):
         return f"{self.estudiante} - {self.metodo_pago}"
+
+
+
+class Docente(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="perfil_docente")
+    nombres_apellidos = models.CharField(max_length=150)
+    email = models.EmailField(unique=True)
+    celular = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return self.nombres_apellidos
+     
 

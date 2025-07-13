@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class NotesHeader extends StatelessWidget {
-  const NotesHeader({super.key});
+  const NotesHeader({super.key, required this.studentname});
+
+  final String studentname;
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(
@@ -27,7 +29,7 @@ class NotesHeader extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: "Carlos Lopez",
+                text: studentname,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
