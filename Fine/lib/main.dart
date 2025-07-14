@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lms_english_app/features/home/views/review_submission_view.dart';
 import 'package:lms_english_app/features/matricula/views/componentes_view.dart';
 import 'package:lms_english_app/features/matricula/views/detalle_curso_view.dart';
 import 'package:lms_english_app/features/matricula/views/matricula_inicio_view.dart';
@@ -10,6 +11,7 @@ import 'features/auth/services/tokkenAccesLogin.dart';
 import 'features/home/views/home_view.dart';
 import 'features/auth/login/login_auth.dart';
 import 'features/home/controllers/home_Controller.dart';
+import 'features/home/views/submit_homework_view.dart';
 
 void main() {
   Get.put(HomeController());
@@ -65,6 +67,18 @@ class MainApp extends StatelessWidget {
             GetPage(
                 name: '/matricula', page: () => const MatriculaInicioView()),
             GetPage(name: '/paralelos', page: () => const ComponentesView()),
+            GetPage(
+              name: '/submit-homework',
+              page: () => SubmitHomeworkView(
+                asignacion: Get.arguments as Map<String, dynamic>,
+              ),
+            ),
+            GetPage(
+              name: '/review-submission',
+              page: () => ReviewSubmissionView(
+                asignacion: Get.arguments as Map<String, dynamic>,
+              ),
+            ),
           ],
         );
       },

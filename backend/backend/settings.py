@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 
 # MongoDB Configuration
 MONGO_DB_URI = "mongodb://localhost:27017/"
-MONGO_DB_NAME = "cliS"
+MONGO_DB_NAME = 'fine_entregas'
 
 
 

@@ -9,4 +9,7 @@ admin.site.register(Nota)
 admin.site.register(Componente)
 admin.site.register(DatosPagoMatricula)
 admin.site.register(Docente)
+admin.site.register(AsignacionTarea)
+admin.site.register(EntregaTarea)
+
 

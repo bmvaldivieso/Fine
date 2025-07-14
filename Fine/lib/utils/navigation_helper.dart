@@ -16,3 +16,12 @@ void handleBottomNavTap(BuildContext context, int index) {
       break;
   }
 }
+
+void goToSubmitHomework(BuildContext context, Map<String, dynamic> tarea) {
+  Navigator.pushNamed(
+    context,
+    '/submit-homework',
+    arguments: tarea,
+  );
+}
+

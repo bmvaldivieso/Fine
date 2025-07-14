@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
+import 'package:lms_english_app/features/home/views/review_submission_view.dart';
+import 'package:lms_english_app/features/home/views/submit_homework_view.dart';
 import '../../auth/register/register.dart';
 import '../../auth/register/represent_form.dart';
 import '../../auth/register/user_form.dart';
 import '../../auth/register/codig_Verificacion.dart';
 import '../../auth/register/welcome_end.dart';
-
-
 
 class HomeController extends GetxController {
   RxInt currentIndex = 0.obs;
@@ -17,33 +17,36 @@ class HomeController extends GetxController {
   }
 
   void goToRegistro() {
-    Get.to(() => const RegisterScreen(),
+    Get.to(
+      () => const RegisterScreen(),
       transition: Transition.fade,
       duration: const Duration(milliseconds: 500),
     );
   }
 
   void goToRepresentRegister() {
-    Get.to(() => const RegisterScreenRepresentante(),
+    Get.to(
+      () => const RegisterScreenRepresentante(),
       transition: Transition.fade,
       duration: const Duration(milliseconds: 500),
     );
   }
 
   void goToUserRegister() {
-    Get.to(() => const RegisterScreenUser(),
+    Get.to(
+      () => const RegisterScreenUser(),
       transition: Transition.fade,
       duration: const Duration(milliseconds: 500),
     );
   }
 
   void gotoCodigoVerifi() {
-    Get.to(() => const codigVerifi(),
+    Get.to(
+      () => const codigVerifi(),
       transition: Transition.fade,
       duration: const Duration(milliseconds: 500),
     );
   }
-
 
   ///Punto Central del Home//
   void gotoHomeWithIndex(int index, {String transitionType = 'offAll'}) {
@@ -63,12 +66,27 @@ class HomeController extends GetxController {
     }
   }
 
-
   void gotoWelcome(String userName) {
-    Get.offAll(() => WelcomeScreen(userName: userName),
+    Get.offAll(
+      () => WelcomeScreen(userName: userName),
       transition: Transition.fade,
       duration: const Duration(milliseconds: 500),
     );
   }
 
+  void goToSubmitHomework(Map<String, dynamic> asignacion) {
+    Get.to(
+      () => SubmitHomeworkView(asignacion: asignacion),
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  void goToReviewSubmission(Map<String, dynamic> asignacion) {
+    Get.to(
+      () => ReviewSubmissionView(asignacion: asignacion),
+      transition: Transition.leftToRight,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
 }

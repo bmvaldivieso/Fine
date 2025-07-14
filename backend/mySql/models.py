@@ -242,3 +242,29 @@ class Docente(models.Model):
         return self.nombres_apellidos
      
 
+class AsignacionTarea(models.Model):
+    titulo = models.CharField(max_length=255)
+    descripcion = models.TextField()
+    fecha_entrega = models.DateTimeField()
+    intentos_maximos = models.PositiveIntegerField(default=1)
+    componente = models.ForeignKey(Componente, on_delete=models.CASCADE)
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    publicada = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.titulo
+
+
+class EntregaTarea(models.Model):
+    asignacion = models.ForeignKey(AsignacionTarea, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    intento_numero = models.PositiveIntegerField()
+    fecha_entrega = models.DateTimeField(auto_now_add=True)
+    entregado = models.BooleanField(default=False)
+    calificacion = models.FloatField(null=True, blank=True)
+    observaciones = models.TextField(blank=True)
+
+    def __str__(self):
+        return f'Entrega {self.intento_numero} - {self.estudiante} - {self.asignacion}'
+
+

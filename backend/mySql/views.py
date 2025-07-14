@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from .models import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import BasePermission
-from mySql.utils.mongodb import MongoDBConnection
 import base64
 from io import BytesIO
 import logging
@@ -32,6 +31,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import PerfilEstudianteSerializer
+
+from rest_framework.parsers import MultiPartParser, FormParser
+from mySql.utils.mongodb import MongoDBConnection
 
 
 
@@ -477,6 +479,160 @@ class PerfilEstudianteView(APIView):
 
 
 
+class EntregarTareaView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, asignacion_id):
+        user = request.user
+
+        try:
+            estudiante = Estudiante.objects.get(user=user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no válido'}, status=404)
+
+        try:
+            asignacion = AsignacionTarea.objects.get(id=asignacion_id, publicada=True)
+        except AsignacionTarea.DoesNotExist:
+            return Response({'error': 'Asignación no disponible'}, status=404)
+
+        intentos_usados = EntregaTarea.objects.filter(
+            asignacion=asignacion, estudiante=estudiante
+        ).count()
+
+        if intentos_usados >= asignacion.intentos_maximos:
+            return Response({'error': 'Ya se han usado todos los intentos'}, status=403)
+
+        intento_numero = intentos_usados + 1
+
+        entrega = EntregaTarea.objects.create(
+            asignacion=asignacion,
+            estudiante=estudiante,
+            intento_numero=intento_numero,
+            entregado=True
+        )
+
+        archivos_enviados = []
+
+        for file_key in request.FILES:
+            archivo = request.FILES[file_key]
+            nombre = archivo.name
+            extension = nombre.split('.')[-1].lower()
+
+            if extension not in ['pdf', 'docx']:
+                return Response({'error': f'Extensión no permitida: {extension}'}, status=400)
+
+            contenido = archivo.read()
+            archivo_doc = {
+                "tipo": "file",
+                "nombre": nombre,
+                "extension": f".{extension}",
+                "contenido_base64": contenido.decode('latin1')
+            }
+            archivos_enviados.append(archivo_doc)
+
+        enlace = request.data.get("enlace")
+        if enlace:
+            archivos_enviados.append({
+                "tipo": "link",
+                "url": enlace
+            })
+
+        entregas_collection = MongoDBConnection.get_entregas_collection()
+        entregas_collection.insert_one({
+            "entrega_id": entrega.id,
+            "asignacion_id": asignacion.id,
+            "estudiante_id": estudiante.id,
+            "intento_numero": intento_numero,
+            "fecha_subida": timezone.now().isoformat(),
+            "archivos": archivos_enviados,
+            "estado": "entregado"
+        })
+
+        return Response({"mensaje": "Tarea subida correctamente", "intento": intento_numero})
+
+
+class ConsultarEntregaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, asignacion_id):
+        user = request.user
+
+        try:
+            estudiante = Estudiante.objects.get(user=user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no válido'}, status=404)
+
+        entregas_collection = MongoDBConnection.get_entregas_collection()
+
+        entregas = list(entregas_collection.find({
+            "asignacion_id": asignacion_id,
+            "estudiante_id": estudiante.id
+        }))
+
+        if not entregas:
+            return Response({'mensaje': 'No se han realizado entregas'}, status=200)
+
+        resultado = []
+        for entrega in entregas:
+            resultado.append({
+                "intento": entrega.get("intento_numero"),
+                "fecha": entrega.get("fecha_subida"),
+                "estado": entrega.get("estado"),
+                "archivos": entrega.get("archivos", [])
+            })
+
+        return Response({"entregas": resultado})
+
+
+
+
+class IntentosRestantesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, asignacion_id):
+        user = request.user
+        try:
+            estudiante = Estudiante.objects.get(user=user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no válido'}, status=404)
+
+        try:
+            asignacion = AsignacionTarea.objects.get(id=asignacion_id)
+        except AsignacionTarea.DoesNotExist:
+            return Response({'error': 'Asignación no encontrada'}, status=404)
+
+        intentos_usados = EntregaTarea.objects.filter(
+            asignacion=asignacion, estudiante=estudiante
+        ).count()
+
+        intentos_maximos = asignacion.intentos_maximos
+        intentos_restantes = max(intentos_maximos - intentos_usados, 0)
+
+        return Response({
+            'intentos_usados': intentos_usados,
+            'intentos_maximos': intentos_maximos,
+            'intentos_restantes': intentos_restantes
+        })
+
+
+
+class AsignacionesDisponiblesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        asignaciones = AsignacionTarea.objects.filter(publicada=True)
+        resultado = []
+        for a in asignaciones:
+            resultado.append({
+                'id': a.id,
+                'titulo': a.titulo,
+                'descripcion': a.descripcion,
+                'fecha_entrega': a.fecha_entrega.isoformat(),
+                'intentos_maximos': a.intentos_maximos
+            })
+        return Response(resultado)
+
 
 
 
@@ -659,6 +815,7 @@ class UserInfoView(APIView):
 """
     
 
+"""
 class normalDatosMongoView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -694,7 +851,8 @@ class normalDatosMongoView(APIView):
             'imagen': encoded_image, 
             'filename': file_doc.get('filename', 'desconocido'),
         })
-    
+
+"""    
 
 """
 class normalpersonView(APIView):
@@ -1018,7 +1176,7 @@ class citasNormalesDeleted(APIView):
             return Response({"error": "Error interno del servidor"}, status=500)
 
 """
-
+"""
 class DatosMongoView(APIView):
     permission_classes = [IsSuperUser]
 
@@ -1055,7 +1213,7 @@ class DatosMongoView(APIView):
             'filename': file_doc.get('filename', 'desconocido'),
         })
     
-
+"""
 
 """
 class personAdmin(APIView):

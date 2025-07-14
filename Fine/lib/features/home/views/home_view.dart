@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lms_english_app/features/home/views/homework_view.dart';
 import 'package:lms_english_app/features/matricula/views/componentes_view.dart';
 import 'package:lms_english_app/features/matricula/views/detalle_curso_view.dart';
 import 'package:lms_english_app/features/matricula/views/matricula_inicio_view.dart';
@@ -19,17 +20,18 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key, this.initialIndex = 0});
 
   final List<Widget> _pages = const [
-    ScheduleView(),
-    CourseView(),
-    Placeholder(),
-    Placeholder(),
+    ScheduleView(), //Indice 0
+    CourseView(), //Indice 1
+    Placeholder(), //Indice 2
+    Placeholder(), //Indice 3
     //drawer
-    NotesView(),
+    NotesView(), //Indice 4
     //validacionMatricula la pantalla es llamada si no hay matricula//
     //EnrollPromptView(),
-    MatriculaInicioView(),
-    ComponentesView(),
-    DetalleCursoView(),
+    MatriculaInicioView(), //Indice 5
+    ComponentesView(), //Indice 6
+    DetalleCursoView(), //Indice 7
+    HomeworkView(), //Indice 8
   ];
 
   @override

@@ -4,8 +4,6 @@ import '../widgets/drawer_item.dart';
 import 'package:get/get.dart';
 import '../features/home/controllers/home_Controller.dart';
 
-
-
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
 
@@ -29,7 +27,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final HomeController _homeController = Get.find<HomeController>();
 
-
     return Drawer(
       child: SafeArea(
         child: Padding(
@@ -52,14 +49,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         isActive: _selectedItem == "Course",
                         onTap: () => _onItemTap("Course", null),
                       ),
-                       buildDrawerItem(
+                      buildDrawerItem(
                         Iconsax.document,
                         "Matricula",
                         screenWidth,
                         isActive: _selectedItem == "Matricula",
                         onTap: () => _onItemTap("Matricula", () {
                           Navigator.pop(context);
-                          _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+                          _homeController.gotoHomeWithIndex(5,
+                              transitionType: 'offAll');
                         }),
                       ),
                       buildDrawerItem(
@@ -67,7 +65,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         "Homework",
                         screenWidth,
                         isActive: _selectedItem == "Homework",
-                        onTap: () => _onItemTap("Homework", null),
+                        onTap: () => _onItemTap("Homework", () {
+                          Navigator.pop(context);
+                          _homeController.gotoHomeWithIndex(8,
+                              transitionType: 'offAll');
+                        }),
                       ),
                       buildDrawerItem(
                         Iconsax.book_1,
@@ -125,7 +127,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         isActive: _selectedItem == "Notes",
                         onTap: () => _onItemTap("Notes", () {
                           Navigator.pop(context);
-                          _homeController.gotoHomeWithIndex(4, transitionType: 'offAll');
+                          _homeController.gotoHomeWithIndex(4,
+                              transitionType: 'offAll');
                         }),
                       ),
                     ],
