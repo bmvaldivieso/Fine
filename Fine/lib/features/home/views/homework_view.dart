@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lms_english_app/core/services/homework_service.dart';
+import 'package:lms_english_app/core/services/service_MatriculaValidate.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
+import 'package:lms_english_app/features/home/controllers/home_Controller.dart';
 import 'package:lms_english_app/utils/navigation_helper.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 
 class HomeworkView extends StatefulWidget {
   const HomeworkView({super.key});
@@ -14,12 +17,16 @@ class HomeworkView extends StatefulWidget {
 class _HomeworkViewState extends State<HomeworkView> {
   List<dynamic> asignaciones = [];
   bool cargando = true;
+  bool _tieneMatricula = false;
+  final _homeController = Get.find<HomeController>();
+  bool _cargando = true;
 
   @override
   void initState() {
     super.initState();
     cargarAsignaciones();
-  }
+    _verificarMatricula();
+    }
 
   Future<void> cargarAsignaciones() async {
     try {
@@ -38,6 +45,23 @@ class _HomeworkViewState extends State<HomeworkView> {
   String formatearFecha(String fecha) {
     final dateTime = DateTime.parse(fecha);
     return DateFormat('dd/MM/yyyy – HH:mm').format(dateTime);
+  }
+
+  //bloqueo matricula
+   void _verificarMatricula() async {
+    final authService = MatService();
+    bool resultado = await authService.validarMatricula();
+    if (!mounted) return;
+    if (!resultado) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+      });
+    } else {
+      setState(() {
+        _tieneMatricula = true;
+        _cargando = false;
+      });
+    }
   }
 
   @override

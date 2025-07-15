@@ -7,6 +7,12 @@ import 'package:lms_english_app/widgets/grades_table.dart';
 import 'package:lms_english_app/widgets/level_selector.dart';
 import 'package:lms_english_app/widgets/notes_header.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
+import '../../../core/services/service_MatriculaValidate.dart';
+import '../controllers/home_Controller.dart';
+import 'package:get/get.dart';
+
+
+
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -23,12 +29,16 @@ class _NotesViewState extends State<NotesView> {
   int totalInasistencias = 0;
   bool cargando = true;
   String nombreEstudiante = '';
+  bool _cargando = true;
+  bool _tieneMatricula = false;
+  late final HomeController _homeController = Get.find<HomeController>();
 
   @override
   void initState() {
     super.initState();
     cargarNombreEstudiante();
     cargarNotas();
+    _verificarMatricula();
   }
 
   Future<void> cargarNombreEstudiante() async {
@@ -90,6 +100,24 @@ class _NotesViewState extends State<NotesView> {
       totalInasistencias = inasistencias;
     });
   }
+
+  //bloqueo matricula
+   void _verificarMatricula() async {
+    final authService = MatService();
+    bool resultado = await authService.validarMatricula();
+    if (!mounted) return;
+    if (!resultado) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+      });
+    } else {
+      setState(() {
+        _tieneMatricula = true;
+        _cargando = false;
+      });
+    }
+  }
+  //aqui
 
   @override
   Widget build(BuildContext context) {

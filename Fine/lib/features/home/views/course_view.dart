@@ -8,14 +8,11 @@ import '../../../widgets/simple_card.dart';
 import '../../../widgets/custom_drawer.dart';
 import '../controllers/home_Controller.dart';
 
-
-
 class CourseView extends StatefulWidget {
   const CourseView({super.key});
   @override
   State<CourseView> createState() => _CourseView();
 }
-
 
 class _CourseView extends State<CourseView> {
   bool _cargando = true;
@@ -44,8 +41,6 @@ class _CourseView extends State<CourseView> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (_cargando) {
@@ -60,27 +55,6 @@ class _CourseView extends State<CourseView> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 127, 150, 228),
       drawer: const CustomDrawer(),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF2042A6),
-        iconTheme: const IconThemeData(color: Colors.white),
-        elevation: 0,
-        title: Row(
-          children: [
-            Icon(Icons.school, color: Colors.white, size: screenWidth * 0.06),
-            SizedBox(width: screenWidth * 0.02),
-            Text(
-              'My Course',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: screenWidth * 0.05,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          SizedBox(width: screenWidth * 0.04),
-        ],
-      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.04,
