@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView  # Asegúrate de importar EspecialidadesView
+from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView  # Asegúrate de importar EspecialidadesView
 
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('asignaciones/<int:asignacion_id>/entrega/', ConsultarEntregaView.as_view(), name='consultar-entrega'),
     path('asignaciones/<int:asignacion_id>/intentos/', IntentosRestantesView.as_view(), name='intentos-restantes'),
     path('asignaciones/', AsignacionesDisponiblesView.as_view(), name='asignaciones-disponibles'),
+    path('descargar-archivo/<str:entrega_id>/', DescargarArchivoView.as_view(), name='descargar-archivo'),
 
 
 

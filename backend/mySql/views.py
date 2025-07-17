@@ -524,6 +524,7 @@ class EntregarTareaView(APIView):
 
             contenido = archivo.read()
             archivo_doc = {
+                # libreria secret, crear la logica para ponerle id al archivo
                 "tipo": "file",
                 "nombre": nombre,
                 "extension": f".{extension}",
@@ -633,7 +634,38 @@ class AsignacionesDisponiblesView(APIView):
             })
         return Response(resultado)
 
+import logging
+logger = logging.getLogger(__name__)
+class DescargarArchivoView(APIView):
+    #permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
+    def get(self, request, entrega_id):
+        # Conectarse a MongoDB
+        logger.warning(f"Entrega ID: {entrega_id}")
+        client = MongoDBConnection.get_client()
+        logger.warning(f"Conectado a MongoDB: {client}")
+        db = client['fine_entregas']
+        coleccion = db['archivos_entregas']
+        logger.warning(f"Coleccion: {coleccion}")
+
+        # Buscar el documento por _id u otro identificador
+        entrega = coleccion.find_one({'_id': ObjectId(entrega_id)})
+        logger.warning(f"Entrega encontrada: {entrega}")
+        if not entrega:
+            return JsonResponse({"error": "Entrega no encontrada"}, status=404)
+
+         # Asumimos que solo hay uno
+        contenido_base64 = archivo['contenido_base64']
+        nombre_archivo = archivo['nombre']
+
+        # Decodificar el contenido base64
+        archivo_bytes = base64.b64decode(contenido_base64)
+
+        # Retornar como archivo adjunto
+        response = HttpResponse(archivo_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+        return response
 
 
 

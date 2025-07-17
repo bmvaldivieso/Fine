@@ -26,7 +26,7 @@ class _HomeworkViewState extends State<HomeworkView> {
     super.initState();
     cargarAsignaciones();
     _verificarMatricula();
-    }
+  }
 
   Future<void> cargarAsignaciones() async {
     try {
@@ -47,8 +47,7 @@ class _HomeworkViewState extends State<HomeworkView> {
     return DateFormat('dd/MM/yyyy – HH:mm').format(dateTime);
   }
 
-  //bloqueo matricula
-   void _verificarMatricula() async {
+  void _verificarMatricula() async {
     final authService = MatService();
     bool resultado = await authService.validarMatricula();
     if (!mounted) return;
@@ -69,7 +68,7 @@ class _HomeworkViewState extends State<HomeworkView> {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F3FA),
       appBar: AppBar(
-        title: const Text('Mis tareas asignadas'),
+        title: const Text('📚 Mis Tareas'),
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
         titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
@@ -77,7 +76,12 @@ class _HomeworkViewState extends State<HomeworkView> {
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : asignaciones.isEmpty
-              ? const Center(child: Text('No hay tareas disponibles'))
+              ? const Center(
+                  child: Text(
+                    '📝 No hay tareas asignadas',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                )
               : ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount: asignaciones.length,
@@ -85,38 +89,106 @@ class _HomeworkViewState extends State<HomeworkView> {
                     final tarea = asignaciones[index];
                     final entregado = tarea['entregado'] ?? false;
 
-                    return Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-                        title: Text(
-                          tarea['titulo'] ?? 'Sin título',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            goToSubmitHomework(context, tarea);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.assignment_turned_in,
+                                        color: Color(0xFF2042A6)),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        tarea['titulo'] ?? 'Sin título',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2042A6),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.calendar_today_outlined,
+                                        size: 18, color: Colors.grey),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Fecha límite: ${formatearFecha(tarea['fecha_entrega'])}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.info_outline,
+                                        size: 18, color: Colors.grey),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: entregado
+                                            ? Colors.green[100]
+                                            : Colors.red[100],
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        entregado
+                                            ? 'Estado: Entregado'
+                                            : 'Estado: Pendiente',
+                                        style: TextStyle(
+                                          color: entregado
+                                              ? Colors.green[800]
+                                              : Colors.red[800],
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton.icon(
+                                    onPressed: () {
+                                      goToSubmitHomework(context, tarea);
+                                    },
+                                    icon: const Icon(Icons.arrow_forward_ios,
+                                        size: 16),
+                                    label: const Text("Ver detalles"),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          const Color(0xFF2042A6),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Fecha límite: ${formatearFecha(tarea['fecha_entrega'])}'),
-                            const SizedBox(height: 5),
-                            Text(
-                              entregado ? 'Estado: Entregado' : 'Estado: Pendiente',
-                              style: TextStyle(
-                                color: entregado ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                        onTap: () {
-                          goToSubmitHomework(context, tarea);
-                        },
                       ),
                     );
                   },

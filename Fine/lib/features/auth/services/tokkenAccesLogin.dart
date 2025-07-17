@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 
 class AuthServiceLogin {
 
@@ -9,6 +10,11 @@ class AuthServiceLogin {
   final String baseUrlIP = "http://192.168.100.28:8000/api";
 
   final _storage = const FlutterSecureStorage();
+
+  Future<void> cerrarSesion() async {
+    await _storage.delete(key: 'access_token');
+    Get.offAllNamed('/login');
+  }
 
   Future<bool> login(String username, String password) async {
     final url = Uri.parse('$_baseUrl/token/');

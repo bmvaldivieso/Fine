@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
 import '../widgets/drawer_item.dart';
 import 'package:get/get.dart';
 import '../features/home/controllers/home_Controller.dart';
@@ -134,6 +135,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                 ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text('Cerrar sesión'),
+                onTap: () {
+                  Get.defaultDialog(
+                    title: '¿Cerrar sesión?',
+                    middleText: 'Se cerrara tu sesión actual.',
+                    textCancel: 'Cancelar',
+                    textConfirm: 'Cerrar sesión',
+                    confirmTextColor: Colors.white,
+                    onConfirm: () async {
+                      await AuthServiceLogin().cerrarSesion();
+                    },
+                  );
+                },
               ),
               // Botón de cerrar fuera del scroll
               Align(

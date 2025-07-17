@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomeworkService {
   final String baseUrl = 'http://localhost:8000/api';
@@ -97,6 +100,40 @@ class HomeworkService {
       return json.decode(response.body);
     } else {
       throw Exception('Error al consultar intentos');
+    }
+  }
+
+  //descargar archivo
+  Future<void> descargarYAbrirArchivo({
+    required String token,
+    required String entregaId,
+    required String nombreArchivo,
+  }) async {
+    final url =
+        Uri.parse('http://localhost:8000/api/descargar-archivo/$entregaId/');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Obtener ruta temporal
+      final dir = await getTemporaryDirectory();
+      final filePath = '${dir.path}/$nombreArchivo';
+      final file = File(filePath);
+
+      // Escribir el archivo
+      await file.writeAsBytes(response.bodyBytes);
+
+      // Abrir con app externa
+      await OpenFile.open(filePath);
+    } else {
+      print('Error al descargar: ${response.statusCode}');
+      throw Exception('No se pudo descargar el archivo');
     }
   }
 }

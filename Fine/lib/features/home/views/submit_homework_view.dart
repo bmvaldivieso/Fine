@@ -51,10 +51,6 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
 
   Future<void> cargarIntentos() async {
     final token = await AuthServiceLogin().getAccessToken();
-    print('Asignación recibida: ${widget.asignacion}');
-    print(
-        'ID de asignación: ${widget.asignacion['id']} (${widget.asignacion['id'].runtimeType})');
-
     final datos = await HomeworkService()
         .obtenerIntentosRestantes(token!, widget.asignacion['id']);
     setState(() {
@@ -137,12 +133,12 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: const Text('¡Entrega exitosa!'),
-            content: const Text('Tu tarea fue enviada correctamente'),
+            title: const Text('✅ Entrega exitosa'),
+            content: const Text('Tu tarea fue enviada correctamente.'),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Cierra el dialogo
+                  Navigator.of(context).pop();
                   Navigator.pushNamed(context, '/review-submission',
                       arguments: widget.asignacion);
                 },
@@ -153,7 +149,6 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
         );
       }
     } catch (e) {
-      print('Error al entregar: $e');
       setState(() => cargando = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Hubo un error al entregar la tarea')),
@@ -164,14 +159,13 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
   @override
   Widget build(BuildContext context) {
     final tarea = widget.asignacion;
-    final hayContenido =
-        archivos.isNotEmpty || enlaceController.text.trim().isNotEmpty;
     final intentosDisponibles = maximos - usados;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF2F8),
+      backgroundColor: const Color(0xFFF3F6FC),
       appBar: AppBar(
-        title: const Text('Entregar tarea'),
+        title:
+            const Text('Entregar Tarea', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -186,62 +180,138 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
                 style:
                     const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 12),
-              Text(tarea['descripcion'] ?? 'Sin descripción'),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.05), blurRadius: 4)
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tarea['descripcion'] ?? 'Sin descripción',
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today_outlined,
+                            size: 18, color: Colors.grey),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Fecha de entrega: ${tarea['fecha_entrega']}',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.repeat, size: 18, color: Colors.grey),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Intentos disponibles: $intentosDisponibles de $maximos',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 15),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
-              Text('Fecha de entrega: ${tarea['fecha_entrega']}',
-                  style: const TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
-              Text('Intentos restantes: $intentosDisponibles de $maximos',
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
               ElevatedButton.icon(
                 onPressed: seleccionarArchivos,
-                icon: const Icon(Icons.upload_file),
-                label: const Text('Seleccionar archivo'),
+                icon: const Icon(Icons.upload_file, color: Colors.white),
+                label: const Text('Seleccionar archivos',
+                    style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2845B9),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                ),
               ),
               const SizedBox(height: 12),
-              ...nombresArchivos.map((nombre) => Text('📄 $nombre')).toList(),
-              const SizedBox(height: 20),
+              ...nombresArchivos.map((nombre) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.insert_drive_file, color: Colors.blue),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(nombre)),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 16),
+              const Text(
+                'Se permiten enlaces',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
               TextField(
                 controller: enlaceController,
                 decoration: const InputDecoration(
-                  labelText: 'Enlace adicional (opcional)',
+                  hintText: 'https://ejemplo.com/tarea',
                   border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
               ),
               const SizedBox(height: 20),
               cargando
                   ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: hayContenido && intentosDisponibles > 0
-                          ? enviarEntrega
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2845B9),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 12),
-                      ),
-                      child: const Text(
-                        'Entregar',
-                        style: TextStyle(color: Colors.white),
+                  : SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: hayContenido && intentosDisponibles > 0
+                              ? enviarEntrega
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2042A6),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const Text(
+                            '📨 Entregar',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
               if (enviado) ...[
                 const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    if (tarea['id'] != null) {
-                      Navigator.pushNamed(context, '/review-submission',
-                          arguments: tarea);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'No se puede revisar sin una tarea válida')),
-                      );
-                    }
-                  },
-                  child: const Text('Revisar entrega'),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      if (tarea['id'] != null) {
+                        Navigator.pushNamed(context, '/review-submission',
+                            arguments: tarea);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'No se puede revisar sin una tarea válida')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.visibility),
+                    label: const Text('Revisar entrega'),
+                  ),
                 )
               ]
             ],
