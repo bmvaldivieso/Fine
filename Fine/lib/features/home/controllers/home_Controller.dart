@@ -9,6 +9,13 @@ import '../../auth/register/welcome_end.dart';
 
 class HomeController extends GetxController {
   RxInt currentIndex = 0.obs;
+  Rxn<Map<String, dynamic>> tareaSeleccionada = Rxn<Map<String, dynamic>>();
+
+
+  void goToSubmitHomeworkInterno(Map<String, dynamic> tarea) {
+    tareaSeleccionada.value = tarea;
+    currentIndex.value = 9; 
+  }
 
   void changeTab(int index) {
     currentIndex.value = index;

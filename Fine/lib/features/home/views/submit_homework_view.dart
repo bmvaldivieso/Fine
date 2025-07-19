@@ -1,8 +1,12 @@
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:lms_english_app/core/services/homework_service.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
+import 'package:lms_english_app/features/home/controllers/home_Controller.dart';
 
 class SubmitHomeworkView extends StatefulWidget {
   final Map asignacion;
@@ -161,6 +165,11 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
     final tarea = widget.asignacion;
     final intentosDisponibles = maximos - usados;
 
+    final fechaEntregaRaw = tarea['fecha_entrega'];
+    final fechaEntrega = DateTime.parse(fechaEntregaRaw);
+    final fechaFormateada =
+        DateFormat('dd/MM/yyyy – HH:mm').format(fechaEntrega);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF3F6FC),
       appBar: AppBar(
@@ -168,6 +177,13 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
             const Text('Entregar Tarea', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            final homeController = Get.find<HomeController>();
+            homeController.changeTab(8); // 👈 vuelve a HomeworkView
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -205,7 +221,7 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
                             size: 18, color: Colors.grey),
                         const SizedBox(width: 6),
                         Text(
-                          'Fecha de entrega: ${tarea['fecha_entrega']}',
+                          'Fecha de entrega: $fechaFormateada',
                           style: const TextStyle(color: Colors.grey),
                         ),
                       ],

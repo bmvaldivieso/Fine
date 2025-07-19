@@ -1,0 +1,8 @@
+{% extends 'docentes/docente_master.html' %}
+
+{% block admin_content %}
+  <div class="container">
+    <h1>Bienvenido, {{ request.user.first_name }}</h1>
+    <a href="#" class="btn btn-primary">Iniciar</a>
+  </div>
+{% endblock %}

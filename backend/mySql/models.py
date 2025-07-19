@@ -237,6 +237,7 @@ class Docente(models.Model):
     nombres_apellidos = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
     celular = models.CharField(max_length=15, unique=True)
+    imagen_perfil = models.ImageField(upload_to='docentes/perfil/', blank=True, null=True)
 
     def __str__(self):
         return self.nombres_apellidos

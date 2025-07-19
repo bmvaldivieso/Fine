@@ -116,7 +116,7 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +125,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$600000$qKjbQzyS0oldFRxQU1QK9N$/YcAYGYgmk/jvL8g7/V7BS7JqV/abelO4LVyf702/hY=','2025-07-13 18:47:22.558916',1,'byron','','','',1,1,'2025-07-11 19:58:07.106382'),(2,'pbkdf2_sha256$600000$w80OGepJFzx0WQ3nAFCElG$Txpf4VL1lt0AMvSiXVHMeXtxm4BGl5QSbzBHVD4jmkc=',NULL,0,'bmvaldivieso','','','bmvaldivieso@gmail.com',0,1,'2025-07-11 21:54:21.292401'),(3,'pbkdf2_sha256$600000$X0UKph3zaKiqPRFSr2ROrl$E7+UHIOqaZ4pKPvZwpyfcRRGMPbpmInsfrm0qEW3fa4=',NULL,0,'rojasf','','','',0,1,'2025-07-13 20:16:07.462715');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$600000$qKjbQzyS0oldFRxQU1QK9N$/YcAYGYgmk/jvL8g7/V7BS7JqV/abelO4LVyf702/hY=','2025-07-14 20:54:40.939039',1,'byron','','','',1,1,'2025-07-11 19:58:07.106382'),(2,'pbkdf2_sha256$600000$w80OGepJFzx0WQ3nAFCElG$Txpf4VL1lt0AMvSiXVHMeXtxm4BGl5QSbzBHVD4jmkc=',NULL,0,'bmvaldivieso','','','bmvaldivieso@gmail.com',0,1,'2025-07-11 21:54:21.292401'),(3,'pbkdf2_sha256$600000$9MUDyjUgDhfKYN8usxfHJJ$6ERdHFkNy/wayzeidvVfp+ly6a7sIt3QAzX63MqMhfM=','2025-07-19 00:34:12.032144',0,'rojasf','','','rojas@gmail.com',0,1,'2025-07-13 20:16:07.000000'),(4,'pbkdf2_sha256$600000$jFSVpxLcHebAgw57MgDQE3$JZ2ObjvjpLIfJkQblAHQXQm79g9brtwTDR6c5GkU4lE=',NULL,0,'carlos','','','',0,1,'2025-07-14 23:28:59.898905');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,7 +207,7 @@ CREATE TABLE `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,7 +216,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
-INSERT INTO `django_admin_log` VALUES (1,'2025-07-12 20:24:11.036478','1','Byron Marcelo Valdivieso Paucar',2,'[{\"changed\": {\"fields\": [\"Nivel estudio\", \"Programa academico\"]}}]',7,1),(2,'2025-07-12 20:32:32.549655','1','A1.1 English Express 1 (express) - 179.1',1,'[{\"added\": {}}]',11,1),(3,'2025-07-12 20:32:47.066969','1','A1.1 English Express 1 (express) - 179.1',2,'[]',11,1),(4,'2025-07-12 20:35:10.300609','1','A1.1 English Express 1 (express) - 2025A',2,'[{\"changed\": {\"fields\": [\"Precio\", \"Periodo\"]}}]',11,1),(5,'2025-07-12 21:09:09.241085','1','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(6,'2025-07-12 21:09:52.705924','1','A1.1 English Express 1 (express) - 2025A',2,'[]',11,1),(7,'2025-07-12 21:10:46.579312','1','A1.1 English Express 1 (express) - 2025A',2,'[]',11,1),(8,'2025-07-12 21:10:51.469641','1','Byron Marcelo Valdivieso Paucar',2,'[]',7,1),(9,'2025-07-12 21:28:56.971836','2','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(10,'2025-07-12 22:51:21.689590','3','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(11,'2025-07-13 01:13:21.347778','2','A2.1 English Express 3 (express) - 2025A',1,'[{\"added\": {}}]',11,1),(12,'2025-07-13 20:16:07.917661','3','rojasf',1,'[{\"added\": {}}]',4,1),(13,'2025-07-13 20:16:42.806823','1','BURI ROJAS JORGE FERNANDO',1,'[{\"added\": {}}]',14,1),(14,'2025-07-13 20:17:31.406090','1','Byron Marcelo Valdivieso Paucar - A2.1 English Express 3 - Bimestre 1',1,'[{\"added\": {}}]',12,1),(15,'2025-07-13 20:18:08.189076','2','Byron Marcelo Valdivieso Paucar - A2.1 English Express 3 - Bimestre 2',1,'[{\"added\": {}}]',12,1),(16,'2025-07-13 20:18:37.292667','3','Byron Marcelo Valdivieso Paucar - A1.1 English Express 1 - Bimestre 1',1,'[{\"added\": {}}]',12,1),(17,'2025-07-13 20:18:58.178819','4','Byron Marcelo Valdivieso Paucar - A1.1 English Express 1 - Bimestre 2',1,'[{\"added\": {}}]',12,1),(18,'2025-07-14 16:41:25.004384','1','Tarea1',1,'[{\"added\": {}}]',15,1),(19,'2025-07-14 18:30:56.447537','2','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(20,'2025-07-14 18:30:59.225157','1','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(21,'2025-07-14 18:40:41.537887','3','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(22,'2025-07-14 19:22:10.680892','4','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(23,'2025-07-14 19:22:13.413147','5','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1);
+INSERT INTO `django_admin_log` VALUES (1,'2025-07-12 20:24:11.036478','1','Byron Marcelo Valdivieso Paucar',2,'[{\"changed\": {\"fields\": [\"Nivel estudio\", \"Programa academico\"]}}]',7,1),(2,'2025-07-12 20:32:32.549655','1','A1.1 English Express 1 (express) - 179.1',1,'[{\"added\": {}}]',11,1),(3,'2025-07-12 20:32:47.066969','1','A1.1 English Express 1 (express) - 179.1',2,'[]',11,1),(4,'2025-07-12 20:35:10.300609','1','A1.1 English Express 1 (express) - 2025A',2,'[{\"changed\": {\"fields\": [\"Precio\", \"Periodo\"]}}]',11,1),(5,'2025-07-12 21:09:09.241085','1','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(6,'2025-07-12 21:09:52.705924','1','A1.1 English Express 1 (express) - 2025A',2,'[]',11,1),(7,'2025-07-12 21:10:46.579312','1','A1.1 English Express 1 (express) - 2025A',2,'[]',11,1),(8,'2025-07-12 21:10:51.469641','1','Byron Marcelo Valdivieso Paucar',2,'[]',7,1),(9,'2025-07-12 21:28:56.971836','2','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(10,'2025-07-12 22:51:21.689590','3','Matrícula de Byron Marcelo Valdivieso Paucar en A1.1 English Express 1',3,'',10,1),(11,'2025-07-13 01:13:21.347778','2','A2.1 English Express 3 (express) - 2025A',1,'[{\"added\": {}}]',11,1),(12,'2025-07-13 20:16:07.917661','3','rojasf',1,'[{\"added\": {}}]',4,1),(13,'2025-07-13 20:16:42.806823','1','BURI ROJAS JORGE FERNANDO',1,'[{\"added\": {}}]',14,1),(14,'2025-07-13 20:17:31.406090','1','Byron Marcelo Valdivieso Paucar - A2.1 English Express 3 - Bimestre 1',1,'[{\"added\": {}}]',12,1),(15,'2025-07-13 20:18:08.189076','2','Byron Marcelo Valdivieso Paucar - A2.1 English Express 3 - Bimestre 2',1,'[{\"added\": {}}]',12,1),(16,'2025-07-13 20:18:37.292667','3','Byron Marcelo Valdivieso Paucar - A1.1 English Express 1 - Bimestre 1',1,'[{\"added\": {}}]',12,1),(17,'2025-07-13 20:18:58.178819','4','Byron Marcelo Valdivieso Paucar - A1.1 English Express 1 - Bimestre 2',1,'[{\"added\": {}}]',12,1),(18,'2025-07-14 16:41:25.004384','1','Tarea1',1,'[{\"added\": {}}]',15,1),(19,'2025-07-14 18:30:56.447537','2','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(20,'2025-07-14 18:30:59.225157','1','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(21,'2025-07-14 18:40:41.537887','3','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(22,'2025-07-14 19:22:10.680892','4','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(23,'2025-07-14 19:22:13.413147','5','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(24,'2025-07-14 23:29:00.752408','4','carlos',1,'[{\"added\": {}}]',4,1),(25,'2025-07-14 23:31:37.448088','2','Carlos Lopez',1,'[{\"added\": {}}]',7,1),(26,'2025-07-15 00:05:47.627017','5','Matrícula de Carlos Lopez en A1.1 English Express 1',3,'',10,1),(27,'2025-07-15 20:23:27.154722','2','Tarea 2',1,'[{\"added\": {}}]',15,1),(28,'2025-07-18 18:36:43.724576','6','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(29,'2025-07-18 18:43:46.397905','10','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(30,'2025-07-18 18:43:49.303272','9','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea 2',3,'',16,1),(31,'2025-07-18 18:43:51.985944','8','Entrega 1 - Carlos Lopez - Tarea1',3,'',16,1),(32,'2025-07-18 18:43:54.529191','7','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(33,'2025-07-18 18:55:39.707396','12','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(34,'2025-07-18 19:01:02.003024','11','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(35,'2025-07-18 19:01:04.814013','13','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(36,'2025-07-18 19:13:26.137422','14','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(37,'2025-07-18 19:13:28.952696','15','Entrega 2 - Byron Marcelo Valdivieso Paucar - Tarea1',3,'',16,1),(38,'2025-07-18 20:49:30.872856','18','Entrega 1 - Byron Marcelo Valdivieso Paucar - Tarea 2',3,'',16,1),(39,'2025-07-18 22:43:17.556688','3','rojasf',2,'[{\"changed\": {\"fields\": [\"password\"]}}]',4,1),(40,'2025-07-18 22:46:38.694477','3','rojasf',2,'[{\"changed\": {\"fields\": [\"Email address\"]}}]',4,1);
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -259,7 +259,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -268,7 +268,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2025-07-11 19:57:29.975496'),(2,'auth','0001_initial','2025-07-11 19:57:30.145951'),(3,'admin','0001_initial','2025-07-11 19:57:30.191970'),(4,'admin','0002_logentry_remove_auto_add','2025-07-11 19:57:30.197074'),(5,'admin','0003_logentry_add_action_flag_choices','2025-07-11 19:57:30.201220'),(6,'contenttypes','0002_remove_content_type_name','2025-07-11 19:57:30.233203'),(7,'auth','0002_alter_permission_name_max_length','2025-07-11 19:57:30.253131'),(8,'auth','0003_alter_user_email_max_length','2025-07-11 19:57:30.265573'),(9,'auth','0004_alter_user_username_opts','2025-07-11 19:57:30.270357'),(10,'auth','0005_alter_user_last_login_null','2025-07-11 19:57:30.293135'),(11,'auth','0006_require_contenttypes_0002','2025-07-11 19:57:30.296255'),(12,'auth','0007_alter_validators_add_error_messages','2025-07-11 19:57:30.304221'),(13,'auth','0008_alter_user_username_max_length','2025-07-11 19:57:30.329441'),(14,'auth','0009_alter_user_last_name_max_length','2025-07-11 19:57:30.353400'),(15,'auth','0010_alter_group_name_max_length','2025-07-11 19:57:30.364662'),(16,'auth','0011_update_proxy_permissions','2025-07-11 19:57:30.371680'),(17,'auth','0012_alter_user_first_name_max_length','2025-07-11 19:57:30.397069'),(18,'mySql','0001_initial','2025-07-11 19:57:30.482288'),(19,'mySql','0002_codigoverificacionemail','2025-07-11 19:57:30.490487'),(20,'mySql','0003_matricula','2025-07-11 19:57:30.519717'),(21,'sessions','0001_initial','2025-07-11 19:57:30.535415'),(22,'mySql','0004_componente_remove_matricula_cuotas_pagar_and_more','2025-07-12 20:22:14.701771'),(23,'mySql','0005_matricula_cuotas','2025-07-12 21:25:11.066102'),(24,'mySql','0006_datospagomatricula','2025-07-12 21:34:28.176399'),(25,'mySql','0007_rename_fecha_pago_datospagomatricula_fecha_registro_and_more','2025-07-12 22:05:53.566071'),(26,'mySql','0008_alter_nota_unique_together_nota_bimestre_and_more','2025-07-13 19:11:46.735593'),(27,'mySql','0009_asignaciontarea_entregatarea','2025-07-14 16:39:52.561629');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2025-07-11 19:57:29.975496'),(2,'auth','0001_initial','2025-07-11 19:57:30.145951'),(3,'admin','0001_initial','2025-07-11 19:57:30.191970'),(4,'admin','0002_logentry_remove_auto_add','2025-07-11 19:57:30.197074'),(5,'admin','0003_logentry_add_action_flag_choices','2025-07-11 19:57:30.201220'),(6,'contenttypes','0002_remove_content_type_name','2025-07-11 19:57:30.233203'),(7,'auth','0002_alter_permission_name_max_length','2025-07-11 19:57:30.253131'),(8,'auth','0003_alter_user_email_max_length','2025-07-11 19:57:30.265573'),(9,'auth','0004_alter_user_username_opts','2025-07-11 19:57:30.270357'),(10,'auth','0005_alter_user_last_login_null','2025-07-11 19:57:30.293135'),(11,'auth','0006_require_contenttypes_0002','2025-07-11 19:57:30.296255'),(12,'auth','0007_alter_validators_add_error_messages','2025-07-11 19:57:30.304221'),(13,'auth','0008_alter_user_username_max_length','2025-07-11 19:57:30.329441'),(14,'auth','0009_alter_user_last_name_max_length','2025-07-11 19:57:30.353400'),(15,'auth','0010_alter_group_name_max_length','2025-07-11 19:57:30.364662'),(16,'auth','0011_update_proxy_permissions','2025-07-11 19:57:30.371680'),(17,'auth','0012_alter_user_first_name_max_length','2025-07-11 19:57:30.397069'),(18,'mySql','0001_initial','2025-07-11 19:57:30.482288'),(19,'mySql','0002_codigoverificacionemail','2025-07-11 19:57:30.490487'),(20,'mySql','0003_matricula','2025-07-11 19:57:30.519717'),(21,'sessions','0001_initial','2025-07-11 19:57:30.535415'),(22,'mySql','0004_componente_remove_matricula_cuotas_pagar_and_more','2025-07-12 20:22:14.701771'),(23,'mySql','0005_matricula_cuotas','2025-07-12 21:25:11.066102'),(24,'mySql','0006_datospagomatricula','2025-07-12 21:34:28.176399'),(25,'mySql','0007_rename_fecha_pago_datospagomatricula_fecha_registro_and_more','2025-07-12 22:05:53.566071'),(26,'mySql','0008_alter_nota_unique_together_nota_bimestre_and_more','2025-07-13 19:11:46.735593'),(27,'mySql','0009_asignaciontarea_entregatarea','2025-07-14 16:39:52.561629'),(28,'mySql','0010_docente_imagen_perfil','2025-07-18 22:40:12.741740');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +294,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('f0n97hirs86bnk1psogekyi53tf7eaka','.eJxVjEEOgjAQRe_StWk6hcKMS_ecoZlpi0VNSSisjHcXEha6fe_9_1aetzX7rabFT1FdFajLLxMOz1QOER9c7rMOc1mXSfSR6NNWPcwxvW5n-3eQueZ9LTRG6oCCbZJg64yzvSMDY2eFJAExUItIaAT7xhkMAUQEjd0hsFWfL8OsNsc:1ub1jO:cvbk7gDATfW7smIus83idMJsaBx_qRbKb5Ey7l5Fgfo','2025-07-27 18:47:22.561534');
+INSERT INTO `django_session` VALUES ('9biimevxx7nmag9d8ivtc6lwbppjhwhg','.eJxVjMsOwiAQRf-FtSEgw0xx6d5vIMOjUjWQlHZl_HdD0oVu7znnvoXnfSt-73n1SxIXYcTpdwscn7kOkB5c703GVrd1CXIo8qBd3lrKr-vh_h0U7mXUhKgpuzBbnIjs2ThNE4CKBrJGFRxnDsmBAQKGmTBY5sgakJRRKD5fvmg27Q:1ucurD:ojs_9P7SIv85YbrRMcU7E0JdwBr35XLE8GT8paYwTuU','2025-08-01 23:51:15.433191'),('bu4v34akj68kkfiyayvv377oc6t2yqtr','.eJxVjEEOgjAQRe_StWk6hcKMS_ecoZlpi0VNSSisjHcXEha6fe_9_1aetzX7rabFT1FdFajLLxMOz1QOER9c7rMOc1mXSfSR6NNWPcwxvW5n-3eQueZ9LTRG6oCCbZJg64yzvSMDY2eFJAExUItIaAT7xhkMAUQEjd0hsFWfL8OsNsc:1ubQC8:pVXgTdOp3nfXpdn30-nCjk5ttAWZy3HTpdC5sImIc-I','2025-07-28 20:54:40.945717');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -320,7 +320,7 @@ CREATE TABLE `mysql_asignaciontarea` (
   CONSTRAINT `mySql_asignaciontare_componente_id_45c9b20e_fk_mySql_com` FOREIGN KEY (`componente_id`) REFERENCES `mysql_componente` (`id`),
   CONSTRAINT `mySql_asignaciontarea_docente_id_6cf4992c_fk_mySql_docente_id` FOREIGN KEY (`docente_id`) REFERENCES `mysql_docente` (`id`),
   CONSTRAINT `mysql_asignaciontarea_chk_1` CHECK ((`intentos_maximos` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,7 +329,7 @@ CREATE TABLE `mysql_asignaciontarea` (
 
 LOCK TABLES `mysql_asignaciontarea` WRITE;
 /*!40000 ALTER TABLE `mysql_asignaciontarea` DISABLE KEYS */;
-INSERT INTO `mysql_asignaciontarea` VALUES (1,'Tarea1','Subir archivos.','2025-07-16 18:00:00.000000',2,1,1,1);
+INSERT INTO `mysql_asignaciontarea` VALUES (1,'Tarea1','Subir archivos.','2025-07-16 18:00:00.000000',2,1,1,1),(2,'Tarea 2','Subir los archivos correspondientes.','2025-07-24 18:00:00.000000',3,1,1,1);
 /*!40000 ALTER TABLE `mysql_asignaciontarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -385,7 +385,7 @@ CREATE TABLE `mysql_componente` (
 
 LOCK TABLES `mysql_componente` WRITE;
 /*!40000 ALTER TABLE `mysql_componente` DISABLE KEYS */;
-INSERT INTO `mysql_componente` VALUES (1,'A1.1 English Express 1','express',179.10,'2025A','19:00 - 21:00',11),(2,'A2.1 English Express 3','express',180.00,'2025A','19:00 - 21:00',15);
+INSERT INTO `mysql_componente` VALUES (1,'A1.1 English Express 1','express',179.10,'2025A','19:00 - 21:00',10),(2,'A2.1 English Express 3','express',180.00,'2025A','19:00 - 21:00',15);
 /*!40000 ALTER TABLE `mysql_componente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -415,7 +415,7 @@ CREATE TABLE `mysql_datospagomatricula` (
   KEY `mySql_datospagomatri_estudiante_id_de0c5aac_fk_mySql_est` (`estudiante_id`),
   CONSTRAINT `mySql_datospagomatri_componente_id_f71599a1_fk_mySql_com` FOREIGN KEY (`componente_id`) REFERENCES `mysql_componente` (`id`),
   CONSTRAINT `mySql_datospagomatri_estudiante_id_de0c5aac_fk_mySql_est` FOREIGN KEY (`estudiante_id`) REFERENCES `mysql_estudiante` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +424,7 @@ CREATE TABLE `mysql_datospagomatricula` (
 
 LOCK TABLES `mysql_datospagomatricula` WRITE;
 /*!40000 ALTER TABLE `mysql_datospagomatricula` DISABLE KEYS */;
-INSERT INTO `mysql_datospagomatricula` VALUES (1,'deposito','457896','1245789638','','','2025-07-13 00:06:30.664576',1,1,'','12/07/2025','170','');
+INSERT INTO `mysql_datospagomatricula` VALUES (1,'deposito','457896','1245789638','','','2025-07-13 00:06:30.664576',1,1,'','12/07/2025','170',''),(2,'deposito','124585','458596','','','2025-07-14 23:33:32.225462',1,2,'','08/07/2025','140','');
 /*!40000 ALTER TABLE `mysql_datospagomatricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -441,6 +441,7 @@ CREATE TABLE `mysql_docente` (
   `email` varchar(254) NOT NULL,
   `celular` varchar(15) NOT NULL,
   `user_id` int NOT NULL,
+  `imagen_perfil` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `celular` (`celular`),
@@ -455,7 +456,7 @@ CREATE TABLE `mysql_docente` (
 
 LOCK TABLES `mysql_docente` WRITE;
 /*!40000 ALTER TABLE `mysql_docente` DISABLE KEYS */;
-INSERT INTO `mysql_docente` VALUES (1,'BURI ROJAS JORGE FERNANDO','rojas@gmail.com','0985126548',3);
+INSERT INTO `mysql_docente` VALUES (1,'BURI ROJAS JORGE FERNANDO','rojas@gmail.com','0985126548',3,NULL);
 /*!40000 ALTER TABLE `mysql_docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -481,7 +482,7 @@ CREATE TABLE `mysql_entregatarea` (
   CONSTRAINT `mySql_entregatarea_asignacion_id_a0c71f9b_fk_mySql_asi` FOREIGN KEY (`asignacion_id`) REFERENCES `mysql_asignaciontarea` (`id`),
   CONSTRAINT `mySql_entregatarea_estudiante_id_29ade25f_fk_mySql_estudiante_id` FOREIGN KEY (`estudiante_id`) REFERENCES `mysql_estudiante` (`id`),
   CONSTRAINT `mysql_entregatarea_chk_1` CHECK ((`intento_numero` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -490,7 +491,7 @@ CREATE TABLE `mysql_entregatarea` (
 
 LOCK TABLES `mysql_entregatarea` WRITE;
 /*!40000 ALTER TABLE `mysql_entregatarea` DISABLE KEYS */;
-INSERT INTO `mysql_entregatarea` VALUES (6,1,'2025-07-14 19:23:34.593551',1,NULL,'',1,1),(7,2,'2025-07-14 19:24:51.367817',1,NULL,'',1,1);
+INSERT INTO `mysql_entregatarea` VALUES (16,1,'2025-07-18 19:13:46.491303',1,NULL,'',1,1),(17,2,'2025-07-18 19:15:55.674027',1,NULL,'',1,1),(19,1,'2025-07-18 20:49:57.527189',1,NULL,'',2,1);
 /*!40000 ALTER TABLE `mysql_entregatarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -524,7 +525,7 @@ CREATE TABLE `mysql_estudiante` (
   UNIQUE KEY `celular` (`celular`),
   UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `mySql_estudiante_user_id_2f61b0b1_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -533,7 +534,7 @@ CREATE TABLE `mysql_estudiante` (
 
 LOCK TABLES `mysql_estudiante` WRITE;
 /*!40000 ALTER TABLE `mysql_estudiante` DISABLE KEYS */;
-INSERT INTO `mysql_estudiante` VALUES (1,'cedula','1125638954','Byron Marcelo Valdivieso Paucar','2003-07-17','M','estudiante','universidad','Zamora','Zamora','bmvaldivieso@gmail.com','0985964588','55632578','san_sebastian','express',2);
+INSERT INTO `mysql_estudiante` VALUES (1,'cedula','1125638954','Byron Marcelo Valdivieso Paucar','2003-07-17','M','estudiante','universidad','Zamora','Zamora','bmvaldivieso@gmail.com','0985964588','55632578','san_sebastian','express',2),(2,'cedula','1245789663','Carlos Lopez','1999-07-14','M','estudiante','universidad','Zamora','Zamora','carlosmlo381@gmail.com','0985457520','45865921','san_sebastian','express',4);
 /*!40000 ALTER TABLE `mysql_estudiante` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -561,7 +562,7 @@ CREATE TABLE `mysql_matricula` (
   KEY `mySql_matricula_componente_cursado_i_4905ad73_fk_mySql_com` (`componente_cursado_id`),
   CONSTRAINT `mySql_matricula_componente_cursado_i_4905ad73_fk_mySql_com` FOREIGN KEY (`componente_cursado_id`) REFERENCES `mysql_componente` (`id`),
   CONSTRAINT `mySql_matricula_estudiante_id_331caa67_fk_mySql_estudiante_id` FOREIGN KEY (`estudiante_id`) REFERENCES `mysql_estudiante` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -665,4 +666,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-14 15:50:44
+-- Dump completed on 2025-07-18 19:58:46

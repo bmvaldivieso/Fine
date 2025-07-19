@@ -26,14 +26,73 @@ from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseForbidden
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import logout
 
 from .serializers import PerfilEstudianteSerializer
 
 from rest_framework.parsers import MultiPartParser, FormParser
 from mySql.utils.mongodb import MongoDBConnection
+
+import pymongo
+from django.http import HttpResponse
+
+#Docente
+from .forms import LoginDocenteForm
+
+
+# Docentes
+@login_required
+def docente_redirect(request):
+    if hasattr(request.user, 'perfil_docente'):
+        return redirect('docente_bienvenida')
+    else:
+        return redirect('docente_login') 
+
+@login_required
+def docentes_bienvenida(request):
+    return render(request, 'docentes/docente_bienvenida.html')        
+
+
+def login_docente_view(request):
+    form = LoginDocenteForm()
+
+    if request.method == 'POST':
+        form = LoginDocenteForm(request.POST)
+        if form.is_valid():
+            correo = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            try:
+                user = User.objects.get(email=correo)
+            except User.DoesNotExist:
+                messages.error(request, 'Correo no registrado.')
+                return render(request, 'docentes/docente_login.html', {'form': form})
+
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                if hasattr(user, 'perfil_docente'):
+                    login(request, user)
+                    return redirect('docente_redirect')
+                else:
+                    return HttpResponseForbidden("Acceso no autorizado para este panel.")
+            else:
+                messages.error(request, 'Credenciales incorrectas.')
+
+    return render(request, 'docentes/docente_login.html', {'form': form})
+
+@login_required
+def logout_docente_view(request):
+    logout(request)
+    return redirect('docente_login')    
+
+
 
 
 
@@ -522,13 +581,14 @@ class EntregarTareaView(APIView):
             if extension not in ['pdf', 'docx']:
                 return Response({'error': f'Extensión no permitida: {extension}'}, status=400)
 
-            contenido = archivo.read()
+            contenido_binario = archivo.read()
+            contenido_base64 = base64.b64encode(contenido_binario).decode('utf-8')
+
             archivo_doc = {
-                # libreria secret, crear la logica para ponerle id al archivo
                 "tipo": "file",
                 "nombre": nombre,
                 "extension": f".{extension}",
-                "contenido_base64": contenido.decode('latin1')
+                "contenido_base64": contenido_base64
             }
             archivos_enviados.append(archivo_doc)
 
@@ -577,6 +637,7 @@ class ConsultarEntregaView(APIView):
         resultado = []
         for entrega in entregas:
             resultado.append({
+                '_id': str(entrega['_id']),
                 "intento": entrega.get("intento_numero"),
                 "fecha": entrega.get("fecha_subida"),
                 "estado": entrega.get("estado"),
@@ -618,54 +679,75 @@ class IntentosRestantesView(APIView):
 
 
 
+
 class AsignacionesDisponiblesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        try:
+            estudiante = Estudiante.objects.get(user=request.user)
+        except Estudiante.DoesNotExist:
+            return Response({'error': 'Estudiante no válido'}, status=404)
+
         asignaciones = AsignacionTarea.objects.filter(publicada=True)
         resultado = []
+
         for a in asignaciones:
+            entregado = EntregaTarea.objects.filter(
+                asignacion=a,
+                estudiante=estudiante
+            ).exists()
+
             resultado.append({
                 'id': a.id,
                 'titulo': a.titulo,
                 'descripcion': a.descripcion,
                 'fecha_entrega': a.fecha_entrega.isoformat(),
-                'intentos_maximos': a.intentos_maximos
+                'intentos_maximos': a.intentos_maximos,
+                'entregado': entregado  
             })
+
         return Response(resultado)
 
-import logging
-logger = logging.getLogger(__name__)
+
+
+
+
 class DescargarArchivoView(APIView):
-    #permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
-    def get(self, request, entrega_id):
-        # Conectarse a MongoDB
-        logger.warning(f"Entrega ID: {entrega_id}")
-        client = MongoDBConnection.get_client()
-        logger.warning(f"Conectado a MongoDB: {client}")
-        db = client['fine_entregas']
-        coleccion = db['archivos_entregas']
-        logger.warning(f"Coleccion: {coleccion}")
+    def get(self, request, entrega_id, nombre_archivo):
+        try:
+            client = pymongo.MongoClient('mongodb://localhost:27017/')
+            db = client['fine_entregas']
+            coleccion = db['archivos_entregas']
 
-        # Buscar el documento por _id u otro identificador
-        entrega = coleccion.find_one({'_id': ObjectId(entrega_id)})
-        logger.warning(f"Entrega encontrada: {entrega}")
-        if not entrega:
-            return JsonResponse({"error": "Entrega no encontrada"}, status=404)
+            entrega = coleccion.find_one({'_id': ObjectId(entrega_id)})
+            if not entrega:
+                return Response({'error': 'Entrega no encontrada'}, status=404)
 
-         # Asumimos que solo hay uno
-        contenido_base64 = archivo['contenido_base64']
-        nombre_archivo = archivo['nombre']
+            archivo = next((a for a in entrega.get('archivos', [])
+                            if a.get('nombre') == nombre_archivo), None)
+            if not archivo:
+                return Response({'error': 'Archivo no encontrado'}, status=404)
 
-        # Decodificar el contenido base64
-        archivo_bytes = base64.b64decode(contenido_base64)
+            contenido_base64 = archivo.get('contenido_base64', '')
+            contenido_binario = base64.b64decode(contenido_base64)
 
-        # Retornar como archivo adjunto
-        response = HttpResponse(archivo_bytes, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
-        return response
+            extension = archivo.get('extension', '.pdf').replace('.', '')
+            mime_type = 'application/pdf' if extension == 'pdf' else 'application/octet-stream'
+
+            # Detectar si es vista previa
+            preview = request.GET.get('preview') == 'true'
+            disposition_type = 'inline' if preview else 'attachment'
+
+            response = HttpResponse(contenido_binario, content_type=mime_type)
+            response['Content-Disposition'] = f'{disposition_type}; filename="{nombre_archivo}"'
+            return response
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
 
 
 

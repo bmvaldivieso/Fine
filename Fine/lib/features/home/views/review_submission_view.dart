@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lms_english_app/core/services/homework_service.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,6 +73,12 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                     final entrega = entregas[index];
                     final archivos = entrega['archivos'] ?? [];
 
+                    final fechaRaw = entrega['fecha'];
+                    DateTime fecha =
+                        DateTime.tryParse(fechaRaw) ?? DateTime.now();
+                    String fechaFormateada =
+                        DateFormat('dd/MM/yyyy – HH:mm').format(fecha);
+
                     return Container(
                       margin: const EdgeInsets.only(bottom: 20),
                       decoration: BoxDecoration(
@@ -106,11 +113,8 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                                 const Icon(Icons.calendar_today,
                                     size: 16, color: Colors.grey),
                                 const SizedBox(width: 6),
-                                Text(
-                                  'Fecha: ${entrega['fecha']}',
-                                  style: const TextStyle(
-                                      color: Colors.grey, fontSize: 14),
-                                ),
+                                Text('Fecha: $fechaFormateada',
+                                    style: const TextStyle(color: Colors.grey)),
                               ],
                             ),
                             const Divider(height: 25),
@@ -156,35 +160,49 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                                       IconButton(
                                         icon: const Icon(Icons.download),
                                         onPressed: () async {
-                                          try {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                  content:
-                                                      Text('Descargando...')),
-                                            );
+                                          final entregaId = entrega['_id'];
+                                          final nombre = archivo['nombre'];
+                                          final url =
+                                              'http://localhost:8000/api/descargar/$entregaId/$nombre';
 
-                                            final token =
-                                                await AuthServiceLogin()
-                                                    .getAccessToken();
-
-                                            await HomeworkService()
-                                                .descargarYAbrirArchivo(
-                                              token: token!,
-                                              entregaId: archivo['id']
-                                                  .toString(), 
-                                              nombreArchivo: archivo['nombre'],
-                                            );
-                                          } catch (e) {
+                                          final uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
                                                   content: Text(
-                                                      'Error al descargar el archivo')),
+                                                      'No se pudo descargar el archivo')),
                                             );
                                           }
                                         },
-                                      )
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.visibility),
+                                        onPressed: () async {
+                                          final entregaId = entrega['_id'];
+                                          final nombre = archivo['nombre'];
+                                          final url =
+                                              'http://localhost:8000/api/descargar/$entregaId/$nombre?preview=true';
+
+                                          final uri = Uri.parse(url);
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content: Text(
+                                                      'No se pudo abrir la vista previa')),
+                                            );
+                                          }
+                                        },
+                                      ),
                                     ],
                                   ),
                                 );
@@ -214,8 +232,32 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.open_in_browser),
-                                        onPressed: () =>
-                                            abrirEnlace(archivo['url']),
+                                        onPressed: () async {
+                                          final url = archivo['url'];
+                                          if (url != null &&
+                                              Uri.tryParse(url)
+                                                      ?.hasAbsolutePath ==
+                                                  true) {
+                                            final uri = Uri.parse(url);
+                                            if (await canLaunchUrl(uri)) {
+                                              await launchUrl(uri);
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                    content: Text(
+                                                        'Enlace inválido')),
+                                              );
+                                            }
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  content:
+                                                      Text('URL mal formada')),
+                                            );
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),

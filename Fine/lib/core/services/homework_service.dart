@@ -102,38 +102,4 @@ class HomeworkService {
       throw Exception('Error al consultar intentos');
     }
   }
-
-  //descargar archivo
-  Future<void> descargarYAbrirArchivo({
-    required String token,
-    required String entregaId,
-    required String nombreArchivo,
-  }) async {
-    final url =
-        Uri.parse('http://localhost:8000/api/descargar-archivo/$entregaId/');
-
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Obtener ruta temporal
-      final dir = await getTemporaryDirectory();
-      final filePath = '${dir.path}/$nombreArchivo';
-      final file = File(filePath);
-
-      // Escribir el archivo
-      await file.writeAsBytes(response.bodyBytes);
-
-      // Abrir con app externa
-      await OpenFile.open(filePath);
-    } else {
-      print('Error al descargar: ${response.statusCode}');
-      throw Exception('No se pudo descargar el archivo');
-    }
-  }
 }

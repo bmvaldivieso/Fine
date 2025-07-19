@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView  # Asegúrate de importar EspecialidadesView
-
+from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView,login_docente_view,docente_redirect,docentes_bienvenida,logout_docente_view  # Asegúrate de importar EspecialidadesView
 
 urlpatterns = [
+    #flutter
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('cod/', EnviarCodigoVerificacionView.as_view(), name='cod_verificacion'), 
     path('verif/', RecivValidateCodView.as_view(), name='reciv_cod'),
@@ -16,8 +16,14 @@ urlpatterns = [
     path('asignaciones/<int:asignacion_id>/entrega/', ConsultarEntregaView.as_view(), name='consultar-entrega'),
     path('asignaciones/<int:asignacion_id>/intentos/', IntentosRestantesView.as_view(), name='intentos-restantes'),
     path('asignaciones/', AsignacionesDisponiblesView.as_view(), name='asignaciones-disponibles'),
-    path('descargar-archivo/<str:entrega_id>/', DescargarArchivoView.as_view(), name='descargar-archivo'),
+    path('descargar/<str:entrega_id>/<str:nombre_archivo>/', DescargarArchivoView.as_view()),
 
+
+    #docentes
+    path('', login_docente_view, name='docente_login'),
+    path('docente/', docente_redirect, name='docente_redirect'),
+    path('docente/bienvenida/', docentes_bienvenida, name='docente_bienvenida'),
+    path('logout-docente/', logout_docente_view, name='logout_docente'),
 
 
     #path('mongoNormal/', normalDatosMongoView.as_view(), name='datos_mongo'),
