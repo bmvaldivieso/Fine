@@ -72,6 +72,7 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                   itemBuilder: (context, index) {
                     final entrega = entregas[index];
                     final archivos = entrega['archivos'] ?? [];
+                    final calificacion = entrega['calificacion'];
 
                     final fechaRaw = entrega['fecha'];
                     DateTime fecha =
@@ -115,6 +116,25 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                                 const SizedBox(width: 6),
                                 Text('Fecha: $fechaFormateada',
                                     style: const TextStyle(color: Colors.grey)),
+                                const SizedBox(width: 6),
+                                if (calificacion != null) ...[
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.grade,
+                                          size: 18, color: Colors.orange),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Calificación: ${calificacion.toString()}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]
                               ],
                             ),
                             const Divider(height: 25),

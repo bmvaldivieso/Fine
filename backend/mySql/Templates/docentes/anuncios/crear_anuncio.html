@@ -1,0 +1,62 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block title %}Crear anuncio{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Crear nuevo anuncio para <strong>{{ componente.nombre }}</strong></h2>
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id_titulo" class="form-label">Título</label>
+      {{ form.titulo }}
+    </div>
+
+    <div class="mb-3">
+      <label for="id_contenido" class="form-label">Contenido</label>
+      {{ form.contenido }}
+    </div>
+
+    <div class="form-check mb-4">
+      {{ form.publicada }}
+      <label class="form-check-label" for="id_publicada">Publicar de inmediato</label>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_imagenes" class="form-label">Imágenes (solo vista, no descargables)</label>
+      <input type="file" name="imagenes" id="id_imagenes" multiple accept="image/*" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_archivos" class="form-label">Archivos (PDF o DOCX)</label>
+      <input type="file" name="archivos" id="id_archivos" multiple accept=".pdf,.docx" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+      <label for="id_links" class="form-label">Enlaces externos (uno por línea)</label>
+      <textarea name="links" id="id_links" rows="4" class="form-control"
+        placeholder="https://ejemplo.com/video1&#10;https://ejemplo.com/video2"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+      <i class="fas fa-save me-1"></i> Crear
+    </button>
+    <a href="{% url 'anuncios_por_componente' componente.id %}" class="btn btn-secondary ms-2">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

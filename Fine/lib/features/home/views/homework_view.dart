@@ -83,6 +83,7 @@ class _HomeworkViewState extends State<HomeworkView> {
                     itemBuilder: (context, index) {
                       final tarea = controller.asignaciones[index];
                       final entregado = tarea['entregado'] ?? false;
+                      final notaFinal = tarea['nota_final'];
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -164,6 +165,25 @@ class _HomeworkViewState extends State<HomeworkView> {
                                           ),
                                         ),
                                       ),
+                                      const SizedBox(width: 6),
+                                      if (notaFinal != null) ...[
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.grade,
+                                                size: 18, color: Colors.grey),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              'Nota final: ${notaFinal.toString()}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ]
                                     ],
                                   ),
                                   const SizedBox(height: 8),

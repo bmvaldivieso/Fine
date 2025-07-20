@@ -16,9 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
         item.addEventListener('click', function (event) {
             if (this.getAttribute('href') === '#') {
                 event.preventDefault();
-                if (this.getAttribute('href') === '#') {
-                    event.preventDefault();
-                }
             }
 
             navItems.forEach(nav => nav.classList.remove('active'));
@@ -34,13 +31,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-
-    const dashboardNavItem = document.getElementById('nav-dashboard-admin');
-    if (dashboardNavItem) {
-        dashboardNavItem.classList.add('active');
-        const sectionTitle = document.getElementById('section-title-admin');
-        if (sectionTitle) {
-            sectionTitle.textContent = dashboardNavItem.querySelector('span').textContent;
-        }
-    }
 });

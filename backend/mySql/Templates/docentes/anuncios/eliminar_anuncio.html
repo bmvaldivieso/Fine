@@ -1,0 +1,49 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block title %}Eliminar anuncio - {{ anuncio.titulo }}{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-danger">⚠ Confirmación de eliminación</h2>
+
+  <div class="alert alert-warning">
+    <strong>Título:</strong> {{ anuncio.titulo }}<br>
+    <strong>Fecha de publicación:</strong> {{ anuncio.fecha_creacion|date:"d M Y H:i" }}<br>
+    <strong>Imágenes asociadas:</strong> {{ anuncio.imagenes.count }} archivo(s)<br>
+    <strong>Archivos y enlaces:</strong> {{ archivos_mongo|length }} item(s)
+  </div>
+
+  {% if archivos_mongo %}
+    <div class="mb-4">
+      <h5>Adjuntos relacionados con este anuncio:</h5>
+      <ul class="list-group">
+        {% for archivo in archivos_mongo %}
+          {% if archivo.tipo == 'documento' %}
+            <li class="list-group-item">
+              <i class="fas fa-file-alt me-1"></i> {{ archivo.nombre }}
+            </li>
+          {% elif archivo.tipo == 'link' %}
+            <li class="list-group-item">
+              <i class="fas fa-link me-1"></i>
+              <a href="{{ archivo.url }}" target="_blank">{{ archivo.url }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <button type="submit" class="btn btn-danger me-2">
+        <i class="fas fa-trash-alt me-1"></i> Eliminar anuncio
+      </button>
+      <a href="{% url 'anuncios_por_componente' anuncio.componente.id %}" class="btn btn-secondary">
+        Cancelar
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

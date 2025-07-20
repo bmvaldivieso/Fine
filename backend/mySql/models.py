@@ -241,6 +241,18 @@ class Docente(models.Model):
 
     def __str__(self):
         return self.nombres_apellidos
+        
+
+class AsignacionDocenteComponente(models.Model):
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE, related_name='componentes_asignados')
+    componente = models.ForeignKey(Componente, on_delete=models.CASCADE, related_name='docentes_asignados')
+    fecha_asignacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('docente', 'componente')
+
+    def __str__(self):
+        return f"{self.docente.nombres_apellidos} → {self.componente.nombre}"
      
 
 class AsignacionTarea(models.Model):
@@ -268,4 +280,45 @@ class EntregaTarea(models.Model):
     def __str__(self):
         return f'Entrega {self.intento_numero} - {self.estudiante} - {self.asignacion}'
 
+class CalificacionFinalTarea(models.Model):
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name='notas_finales')
+    tarea = models.ForeignKey(AsignacionTarea, on_delete=models.CASCADE, related_name='calificaciones_finales')
+    nota_final = models.FloatField()
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('estudiante', 'tarea')
+        verbose_name = 'Calificación final de tarea'
+        verbose_name_plural = 'Calificaciones finales de tareas'
+
+    def __str__(self):
+        return f"{self.estudiante.nombres_apellidos} → {self.tarea.titulo}: {self.nota_final}"
+
+# Anuncios
+class Anuncio(models.Model):
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE, related_name='anuncios')
+    componente = models.ForeignKey(Componente, on_delete=models.CASCADE, related_name='anuncios_asociados')
+    titulo = models.CharField(max_length=255)
+    contenido = models.TextField(blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    publicada = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.titulo} - {self.componente.nombre}"
+
+class ImagenAnuncio(models.Model):
+    anuncio = models.ForeignKey(Anuncio, on_delete=models.CASCADE, related_name='imagenes')
+    imagen = models.ImageField(upload_to='anuncios/imagenes/')
+    descripcion = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Imagen para {self.anuncio.titulo}"
+
+class ComentarioAnuncio(models.Model):
+    anuncio = models.ForeignKey(Anuncio, on_delete=models.CASCADE, related_name='comentarios')
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    texto = models.TextField()
+    fecha_comentario = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comentario de {self.estudiante.nombres_apellidos} en {self.anuncio.titulo}"

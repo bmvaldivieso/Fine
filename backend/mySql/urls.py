@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView,login_docente_view,docente_redirect,docentes_bienvenida,logout_docente_view  # Asegúrate de importar EspecialidadesView
+from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView,login_docente_view,docente_redirect,docentes_bienvenida,logout_docente_view,componentes_docente,tareas_componente,crear_tarea,editar_tarea,eliminar_tarea,calificar_entrega,obtener_archivos_entrega,descargar_archivo_mongo,ver_pdf_mongo,lista_estudiantes_entregaron,entregas_estudiante_tarea  # Asegúrate de importar EspecialidadesView
+from .views import componentes_docente_anuncio, anuncios_por_componente, crear_anuncio, editar_anuncio, eliminar_anuncio, eliminar_adjunto_anuncio, eliminar_imagen_anuncio
+from .views import AnunciosEstudianteAPIView
 
 urlpatterns = [
     #flutter
@@ -17,6 +19,8 @@ urlpatterns = [
     path('asignaciones/<int:asignacion_id>/intentos/', IntentosRestantesView.as_view(), name='intentos-restantes'),
     path('asignaciones/', AsignacionesDisponiblesView.as_view(), name='asignaciones-disponibles'),
     path('descargar/<str:entrega_id>/<str:nombre_archivo>/', DescargarArchivoView.as_view()),
+    #anuncios
+    path('api/estudiante/anuncios/', AnunciosEstudianteAPIView.as_view(), name='anuncios_estudiante_view'),
 
 
     #docentes
@@ -24,6 +28,29 @@ urlpatterns = [
     path('docente/', docente_redirect, name='docente_redirect'),
     path('docente/bienvenida/', docentes_bienvenida, name='docente_bienvenida'),
     path('logout-docente/', logout_docente_view, name='logout_docente'),
+    path('docente/componentes/', componentes_docente, name='componentes_docente'),
+    path('docente/componente/<int:componente_id>/tareas/', tareas_componente, name='tareas_componente'),
+    path('docente/componente/<int:componente_id>/tareas/crear/', crear_tarea, name='crear_tarea'),
+    path('docente/tarea/<int:tarea_id>/editar/', editar_tarea, name='editar_tarea'),
+    path('docente/tarea/<int:tarea_id>/eliminar/', eliminar_tarea, name='eliminar_tarea'),
+    path('docente/entrega/<int:entrega_id>/calificar/', calificar_entrega, name='calificar_entrega'),
+    path('docente/entrega/<int:entrega_id>/archivos/', obtener_archivos_entrega, name='obtener_archivos_entrega'),
+    path('docente/entrega/<int:entrega_id>/ver/<str:nombre>/', ver_pdf_mongo, name='ver_pdf_mongo'),
+    path('docente/entrega/<int:entrega_id>/descargar/<str:nombre>/', descargar_archivo_mongo, name='descargar_archivo_mongo'),
+    path('docente/tarea/<int:tarea_id>/entregantes/', lista_estudiantes_entregaron, name='lista_estudiantes_entregaron'),
+    path('docente/tarea/<int:tarea_id>/estudiante/<int:estudiante_id>/entregas/', entregas_estudiante_tarea, name='entregas_estudiante_tarea'),
+    # docentes-anuncios
+    path('docente/componentes_anuncios/', componentes_docente_anuncio, name='componentes_docente_anuncio'),
+    path('docente/componente/<int:componente_id>/anuncios/', anuncios_por_componente, name='anuncios_por_componente'),
+    path('docente/componente/<int:componente_id>/anuncios/crear/', crear_anuncio, name='crear_anuncio'),
+    path('docente/anuncio/<int:anuncio_id>/editar/', editar_anuncio, name='editar_anuncio'),
+    path('docente/componente/<int:anuncio_id>/anuncios/eliminar-adjunto/', eliminar_adjunto_anuncio, name='eliminar_adjunto_anuncio'),
+    path('docente/anuncio/<int:anuncio_id>/eliminar-imagen/', eliminar_imagen_anuncio, name='eliminar_imagen_anuncio'),
+    path('docente/anuncio/<int:anuncio_id>/eliminar/', eliminar_anuncio, name='eliminar_anuncio'),
+
+
+
+
 
 
     #path('mongoNormal/', normalDatosMongoView.as_view(), name='datos_mongo'),

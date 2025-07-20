@@ -19,3 +19,9 @@ class MongoDBConnection:
     def get_entregas_collection():
         db = MongoDBConnection.get_db()
         return db["archivos_entregas"]
+
+    @staticmethod
+    def get_anuncios_collection():
+        db = MongoDBConnection.get_db()
+        return db["archivos_anuncio"]
+    

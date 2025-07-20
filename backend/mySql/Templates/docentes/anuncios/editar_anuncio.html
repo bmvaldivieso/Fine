@@ -1,0 +1,149 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block title %}Editar anuncio - {{ anuncio.titulo }}{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editar anuncio: <strong>{{ anuncio.titulo }}</strong></h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_titulo" class="form-label">Título</label>
+            {{ form.titulo }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_contenido" class="form-label">Contenido</label>
+            {{ form.contenido }}
+        </div>
+
+        <div class="form-check mb-4">
+            {{ form.publicada }}
+            <label class="form-check-label" for="id_publicada">Publicado</label>
+        </div>
+
+        <hr class="my-4" />
+
+        <h5>Imágenes actuales:</h5>
+        {% if anuncio.imagenes.all %}
+        <div class="row">
+            {% for imagen in anuncio.imagenes.all %}
+            <div class="col-md-3 mb-3 text-center">
+                <img src="{{ imagen.imagen.url }}" class="img-thumbnail mb-2" alt="Imagen anuncio">
+                <button type="button" class="btn btn-sm btn-danger btn-eliminar-imagen" data-id="{{ imagen.id }}">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No hay imágenes asociadas.</p>
+        {% endif %}
+
+
+        <h5>Archivos y enlaces actuales:</h5>
+        {% if archivos_mongo %}
+        <ul class="list-group mb-3">
+            {% for archivo in archivos_mongo %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {% if archivo.tipo == 'documento' %}
+                <i class="fas fa-file-alt me-2"></i> {{ archivo.nombre }}
+                {% elif archivo.tipo == 'link' %}
+                <i class="fas fa-link me-2"></i> <a href="{{ archivo.url }}" target="_blank">{{ archivo.url }}</a>
+                {% endif %}
+                <button type="button" class="btn btn-sm btn-danger btn-eliminar-adjunto" data-id="{{ archivo.id_str }}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay archivos o enlaces registrados.</p>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="id_imagenes" class="form-label">Agregar nuevas imágenes</label>
+            <input type="file" name="imagenes" id="id_imagenes" multiple accept="image/*" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label for="id_archivos" class="form-label">Agregar nuevos archivos PDF o DOCX</label>
+            <input type="file" name="archivos" id="id_archivos" multiple accept=".pdf,.docx" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label for="id_links" class="form-label">Agregar nuevos enlaces (uno por línea)</label>
+            <textarea name="links" id="id_links" rows="4" class="form-control"
+                placeholder="https://ejemplo.com/recurso1&#10;https://ejemplo.com/recurso2"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i> Actualizar anuncio
+        </button>
+        <a href="{% url 'anuncios_por_componente' anuncio.componente.id %}" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.btn-eliminar-adjunto').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const archivoId = btn.getAttribute('data-id');
+            const url = "{% url 'eliminar_adjunto_anuncio' anuncio.id %}";
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ archivo_id: archivoId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        btn.closest('li').remove();
+                    } else {
+                        alert("Error al eliminar adjunto.");
+                    }
+                });
+        });
+    });
+
+    document.querySelectorAll('.btn-eliminar-imagen').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const imagenId = btn.getAttribute('data-id');
+      const url = "{% url 'eliminar_imagen_anuncio' anuncio.id %}";
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ imagen_id: imagenId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          btn.closest('.col-md-3').remove();
+        } else {
+          alert("Error al eliminar imagen.");
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -17,27 +17,34 @@
   <link rel="stylesheet" href="{% static 'css/docente_master.css' %}" />
   <link rel="stylesheet" href="{% static 'css/docente_master_compact.css' %}" />
 
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
   {% block extra_css %}{% endblock %}
 </head>
 
 <body>
   <aside class="sidebar-admin">
     <div class="logo-section">
-      <img src="{% static 'images/logo2.png' %}" alt="Cámara de Comercio de Loja" class="img-fluid"
+      <img src="{% static 'images/logo2.png' %}" alt="Fine-Tuned English" class="img-fluid"
         id="logo-admin-sidebar" />
     </div>
 
     <div class="profile-section">
-      <img src="{% static 'images/imagen2.png' %}" alt="Carlos Lopez Admin" class="profile-pic" />
+      <img src="{% static 'images/imagen2.png' %}" alt="Usuario Docente" class="profile-pic" />
       <p class="profile-name">Carlos Lopez</p>
     </div>
 
     <nav class="nav-links">
-      <a href="#" class="nav-item" id="nav-dashboard-admin"><i class="fas fa-chart-line"></i>
-        <span>Tareas</span></a>
-      <a href="#" class="nav-item" id="nav-usuarios-admin"><i class="fas fa-users"></i>
-        <span>Anuncios</span></a>
-      <a href="#" class="nav-item" id="nav-socios-admin"><i class="fas fa-handshake"></i>
+      <a href="{% url 'componentes_docente' %}"
+        class="nav-item {% if request.resolver_match.url_name == 'componentes_docente' %}active{% endif %}">
+        <i class="fas fa-chart-line"></i><span>Tareas</span>
+      </a>
+      <a href="{% url 'componentes_docente_anuncio' %}"
+        class="nav-item {% if request.resolver_match.url_name == 'componentes_docente_anuncio' %}active{% endif %}">
+        <i class="fas fa-bullhorn"></i><span>Anuncios</span>
+      </a>
+      <a href="#" class="nav-item" id="nav-notas"><i class="fas fa-file"></i>
         <span>Notas</span></a>
     </nav>
 
@@ -54,7 +61,46 @@
 
   <main class="main-content-admin">
     <div class="top-bar-admin">
-      <h2 id="section-title-admin">Dashboard</h2>
+      <h2 id="section-title-admin">
+        {% if request.resolver_match.url_name == 'docente_login' %}
+          Inicio de sesión
+        {% elif request.resolver_match.url_name == 'docente_redirect' %}
+          Redireccionamiento
+        {% elif request.resolver_match.url_name == 'docente_bienvenida' %}
+          Bienvenida
+        {% elif request.resolver_match.url_name == 'logout_docente' %}
+          Cierre de sesión
+        {% elif request.resolver_match.url_name == 'componentes_docente' %}
+          Tareas
+        {% elif request.resolver_match.url_name == 'tareas_componente' %}
+          Tareas del componente
+        {% elif request.resolver_match.url_name == 'crear_tarea' %}
+          Crear tarea
+        {% elif request.resolver_match.url_name == 'editar_tarea' %}
+          Editar tarea
+        {% elif request.resolver_match.url_name == 'eliminar_tarea' %}
+          Eliminar tarea
+        {% elif request.resolver_match.url_name == 'calificar_entrega' %}
+          Calificar entrega
+        {% elif request.resolver_match.url_name == 'obtener_archivos_entrega' %}
+          Archivos adjuntos
+        {% elif request.resolver_match.url_name == 'ver_pdf_mongo' %}
+          Vista de archivo
+        {% elif request.resolver_match.url_name == 'descargar_archivo_mongo' %}
+          Descargar archivo
+        {% elif request.resolver_match.url_name == 'lista_estudiantes_entregaron' %}
+          Estudiantes entregantes
+        {% elif request.resolver_match.url_name == 'entregas_estudiante_tarea' %}
+          Entregas del estudiante
+        {% elif request.resolver_match.url_name == 'componentes_docente_anuncio' %}
+          Anuncios
+        {% elif request.resolver_match.url_name == 'anuncios_por_componente' %}
+          Lista de Anuncios
+        {% else %}
+          Contenido
+        {% endif %}
+      </h2>      
+
       <div class="topbar-right-group d-flex align-items-center gap-3">
         <div class="notification-icon">
           <i class="far fa-bell"></i>
@@ -68,13 +114,17 @@
       </div>
     </div>
 
-    {% block admin_content %}{% endblock %}
+    {% block admin_content %}
+    <div class="admin-content-scroll">
+    </div>
+    {% endblock %}
 
     <footer class="footer-admin">
       © 2025 Fine-Tuned English. Todos los derechos reservados.
     </footer>
   </main>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <script src="{% static 'js/docente_master.js' %}" defer></script>
   {% block extra_js %}{% endblock %}

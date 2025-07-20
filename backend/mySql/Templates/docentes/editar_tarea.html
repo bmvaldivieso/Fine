@@ -1,0 +1,64 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block title %}Editar tarea - {{ tarea.titulo }}{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editar asignación: <strong>{{ tarea.titulo }}</strong></h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_titulo" class="form-label">Título</label>
+            {{ form.titulo }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_descripcion" class="form-label">Descripción</label>
+            {{ form.descripcion }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_fecha_entrega" class="form-label">Fecha de entrega</label>
+            {{ form.fecha_entrega }}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_intentos_maximos" class="form-label">Intentos máximos</label>
+            {{ form.intentos_maximos }}
+        </div>
+
+        <div class="form-check mb-4">
+            {{ form.publicada }}
+            <label class="form-check-label" for="id_publicada">Publicada</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i> Actualizar
+        </button>
+        <a href="{% url 'tareas_componente' tarea.componente.id %}" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    flatpickr("#id_fecha_entrega", {
+        enableTime: true,
+        dateFormat: "Y-m-d\\TH:i",
+        time_24hr: true,
+        allowInput: false
+    });
+</script>
+{% endblock %}

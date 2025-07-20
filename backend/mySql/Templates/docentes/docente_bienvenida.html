@@ -3,6 +3,6 @@
 {% block admin_content %}
   <div class="container">
     <h1>Bienvenido, {{ request.user.first_name }}</h1>
-    <a href="#" class="btn btn-primary">Iniciar</a>
+    <a href="{% url 'componentes_docente' %}" class="btn btn-primary">Iniciar</a>
   </div>
 {% endblock %}

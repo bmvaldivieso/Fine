@@ -9,7 +9,16 @@ admin.site.register(Nota)
 admin.site.register(Componente)
 admin.site.register(DatosPagoMatricula)
 admin.site.register(Docente)
-admin.site.register(AsignacionTarea)
 admin.site.register(EntregaTarea)
+admin.site.register(AsignacionDocenteComponente)
+admin.site.register(CalificacionFinalTarea)
+admin.site.register(Anuncio)
+admin.site.register(ImagenAnuncio)
+admin.site.register(ComentarioAnuncio)
 
-
+#admin.site.register(AsignacionTarea)
+@admin.register(AsignacionTarea)
+class AsignacionTareaAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'componente', 'docente', 'fecha_entrega', 'publicada')
+    list_filter = ('componente', 'docente', 'publicada')
+    search_fields = ('titulo', 'descripcion')

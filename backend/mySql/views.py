@@ -44,7 +44,8 @@ import pymongo
 from django.http import HttpResponse
 
 #Docente
-from .forms import LoginDocenteForm
+from .forms import LoginDocenteForm, AsignacionTareaForm, CrearAnuncioForm
+from django.views.decorators.http import require_POST
 
 
 # Docentes
@@ -91,6 +92,446 @@ def login_docente_view(request):
 def logout_docente_view(request):
     logout(request)
     return redirect('docente_login')    
+
+@login_required
+def componentes_docente(request):
+    docente = request.user.perfil_docente
+    asignaciones = AsignacionDocenteComponente.objects.filter(docente=docente).select_related('componente')
+    componentes = [asignacion.componente for asignacion in asignaciones]
+    return render(request, 'docentes/componentes_list.html', {'componentes': componentes})
+
+@login_required
+def tareas_componente(request, componente_id):
+    docente = request.user.perfil_docente
+    componente = get_object_or_404(Componente, id=componente_id)
+    tareas = AsignacionTarea.objects.filter(docente=docente, componente=componente)
+    return render(request, 'docentes/tareas_list.html', {'tareas': tareas, 'componente': componente})
+
+@login_required
+def crear_tarea(request, componente_id):
+    docente = request.user.perfil_docente
+    componente = get_object_or_404(Componente, id=componente_id)
+    form = AsignacionTareaForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        tarea = form.save(commit=False)
+        tarea.docente = docente
+        tarea.componente = componente
+        tarea.save()
+
+        # Crear notas finales iniciales en 0.0
+        from mySql.models import Matricula, CalificacionFinalTarea
+        componentes_matriculados = Matricula.objects.filter(
+            componente_cursado=componente,
+            activa=True,
+            estado__in=['activa', 'confirmada']
+        ).select_related('estudiante')
+
+        for matricula in componentes_matriculados:
+            CalificacionFinalTarea.objects.get_or_create(
+                estudiante=matricula.estudiante,
+                tarea=tarea,
+                defaults={'nota_final': 0.0}
+            )
+
+        return redirect('tareas_componente', componente_id=componente.id)
+
+    return render(request, 'docentes/crear_tarea.html', {'form': form, 'componente': componente})
+
+
+@login_required
+def editar_tarea(request, tarea_id):
+    tarea = get_object_or_404(AsignacionTarea, id=tarea_id, docente=request.user.perfil_docente)
+    form = AsignacionTareaForm(request.POST or None, instance=tarea)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        #messages.success(request, 'Tarea actualizada.')
+        return redirect('tareas_componente', componente_id=tarea.componente.id)
+    return render(request, 'docentes/editar_tarea.html', {'form': form, 'tarea': tarea})
+
+@login_required
+def eliminar_tarea(request, tarea_id):
+    tarea = get_object_or_404(AsignacionTarea, id=tarea_id, docente=request.user.perfil_docente)
+    if request.method == 'POST':
+        tarea.delete()
+        #messages.success(request, 'Tarea eliminada.')
+        return redirect('tareas_componente', componente_id=tarea.componente.id)
+    return render(request, 'docentes/confirmar_eliminacion_tarea.html', {'tarea': tarea})
+
+
+@login_required
+def calificar_entrega(request, entrega_id):
+    entrega = get_object_or_404(EntregaTarea, id=entrega_id, asignacion__docente=request.user.perfil_docente)
+
+    if request.method == 'POST':
+        calificacion = request.POST.get('calificacion')
+        observaciones = request.POST.get('observaciones')
+
+        entrega.calificacion = calificacion
+        entrega.observaciones = observaciones
+        entrega.save()
+
+        # Recalcular la nota final con el intento más alto
+        entregas = EntregaTarea.objects.filter(
+            asignacion=entrega.asignacion,
+            estudiante=entrega.estudiante,
+            calificacion__isnull=False
+        ).order_by('-intento_numero')
+
+        if entregas.exists():
+            intento_final = entregas.first()
+            nota_final = float(intento_final.calificacion)
+        else:
+            nota_final = 0.0  
+
+        # Actualizar o crear registro en CalificacionFinalTarea
+        CalificacionFinalTarea.objects.update_or_create(
+            estudiante=entrega.estudiante,
+            tarea=entrega.asignacion,
+            defaults={'nota_final': nota_final}
+        )
+
+        return redirect('entregas_estudiante_tarea', entrega.asignacion.id, entrega.estudiante.id)
+
+    return render(request, 'docentes/calificar_entrega.html', {'entrega': entrega})
+
+
+def obtener_archivos_entrega(entrega_id):
+    collection = MongoDBConnection.get_entregas_collection()
+    doc = collection.find_one({'entrega_id': entrega_id})
+    return doc.get('archivos', []) if doc else []
+
+
+@login_required
+def ver_pdf_mongo(request, entrega_id, nombre):
+    collection = MongoDBConnection.get_entregas_collection()
+    doc = collection.find_one({'entrega_id': entrega_id})
+
+    if not doc:
+        return HttpResponse('Archivo no encontrado', status=404)
+
+    for archivo in doc.get('archivos', []):
+        if archivo['tipo'] == 'file' and archivo['nombre'] == nombre and archivo['extension'] == '.pdf':
+            contenido = base64.b64decode(archivo['contenido_base64'])
+            response = HttpResponse(contenido, content_type='application/pdf')
+            response['Content-Disposition'] = f'inline; filename="{nombre}"'
+            return response
+
+    return HttpResponse('Archivo PDF no disponible', status=404)
+
+
+@login_required
+def descargar_archivo_mongo(request, entrega_id, nombre):
+    collection = MongoDBConnection.get_entregas_collection()
+    doc = collection.find_one({'entrega_id': entrega_id})
+
+    if not doc:
+        return HttpResponse('Archivo no encontrado', status=404)
+
+    for archivo in doc.get('archivos', []):
+        if archivo['tipo'] == 'file' and archivo['nombre'] == nombre:
+            contenido = base64.b64decode(archivo['contenido_base64'])
+            extension = archivo['extension'].lower()
+            content_type = {
+                '.pdf': 'application/pdf',
+                '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            }.get(extension, 'application/octet-stream')
+
+            response = HttpResponse(contenido, content_type=content_type)
+            response['Content-Disposition'] = f'attachment; filename="{nombre}"'
+            return response
+
+    return HttpResponse('Archivo no disponible para descarga', status=404)
+
+@login_required
+def lista_estudiantes_entregaron(request, tarea_id):
+    tarea = get_object_or_404(AsignacionTarea, id=tarea_id, docente=request.user.perfil_docente)
+
+    entregas = EntregaTarea.objects.filter(asignacion=tarea).select_related('estudiante')
+
+    estudiantes_entregaron = {}
+    for entrega in entregas:
+        estudiante_id = entrega.estudiante.id
+        if estudiante_id not in estudiantes_entregaron:
+            estudiantes_entregaron[estudiante_id] = entrega.estudiante
+
+    notas_finales_qs = CalificacionFinalTarea.objects.filter(tarea=tarea)
+    notas_finales = {nota.estudiante.id: nota for nota in notas_finales_qs}
+
+    return render(request, 'docentes/entregantes_tarea.html', {
+        'tarea': tarea,
+        'estudiantes': estudiantes_entregaron.values(),
+        'notas_finales': notas_finales
+    })
+
+@login_required
+def entregas_estudiante_tarea(request, tarea_id, estudiante_id):
+    tarea = get_object_or_404(AsignacionTarea, id=tarea_id, docente=request.user.perfil_docente)
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+
+    entregas = EntregaTarea.objects.filter(asignacion=tarea, estudiante=estudiante)
+
+    for entrega in entregas:
+        entrega.archivos = obtener_archivos_entrega(entrega.id)
+
+    return render(request, 'docentes/entregas_estudiante.html', {
+        'tarea': tarea,
+        'estudiante': estudiante,
+        'entregas': entregas
+    })
+    
+
+
+
+
+
+
+
+
+
+# Vistas de la funcionalidad de anuncios profesor
+@login_required
+def componentes_docente_anuncio(request):
+    docente = request.user.perfil_docente
+    componentes = Componente.objects.filter(docentes_asignados__docente=docente).distinct()
+
+    return render(request, 'docentes/anuncios/componentes_docente_anuncio.html', {
+        'componentes': componentes
+    })
+
+
+@login_required
+def anuncios_por_componente(request, componente_id):
+    docente = request.user.perfil_docente
+    componente = get_object_or_404(Componente, id=componente_id)
+
+    # Validar que el docente está asignado al componente
+    if not componente.docentes_asignados.filter(docente=docente).exists():
+        return HttpResponseForbidden("No autorizado")
+
+    anuncios = Anuncio.objects.filter(componente=componente).order_by('-fecha_creacion')
+
+    return render(request, 'docentes/anuncios/anuncios_por_componente.html', {
+        'componente': componente,
+        'anuncios': anuncios
+    })
+
+@login_required
+def crear_anuncio(request, componente_id):
+    docente = request.user.perfil_docente
+    componente = get_object_or_404(Componente, id=componente_id)
+
+    # Validar acceso al componente
+    if not componente.docentes_asignados.filter(docente=docente).exists():
+        return HttpResponseForbidden("No autorizado")
+
+    if request.method == 'POST':
+        form = CrearAnuncioForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            anuncio = form.save(commit=False)
+            anuncio.docente = docente
+            anuncio.componente = componente
+            anuncio.save()
+
+            # Imágenes en Django
+            imagenes = request.FILES.getlist('imagenes')
+            for img in imagenes:
+                ImagenAnuncio.objects.create(
+                    anuncio=anuncio,
+                    imagen=img
+                )
+
+            # Archivos y links en MongoDB
+            coleccion = MongoDBConnection.get_anuncios_collection()
+
+            # Archivos PDF/DOCX
+            archivos = request.FILES.getlist('archivos')
+            for archivo in archivos:
+                extension = archivo.name.split('.')[-1].lower()
+                if extension in ['pdf', 'docx']:
+                    contenido_base64 = base64.b64encode(archivo.read()).decode('utf-8')
+                    coleccion.insert_one({
+                        "anuncio_id": anuncio.id,
+                        "nombre": archivo.name,
+                        "extension": extension,
+                        "tipo": "documento",
+                        "contenido_base64": contenido_base64,
+                        "fecha": datetime.utcnow()
+                    })
+
+            # Links ingresados por el docente
+            links_raw = request.POST.get('links', '')
+            links = [link.strip() for link in links_raw.splitlines() if link.strip()]
+            for link in links:
+                coleccion.insert_one({
+                    "anuncio_id": anuncio.id,
+                    "tipo": "link",
+                    "url": link,
+                    "fecha": datetime.utcnow()
+                })
+
+            # messages.success(request, "Anuncio creado con éxito.")
+            return redirect('anuncios_por_componente', componente_id=componente.id)
+    else:
+        form = CrearAnuncioForm()
+
+    return render(request, 'docentes/anuncios/crear_anuncio.html', {
+        'form': form,
+        'componente': componente
+    })
+
+@login_required
+def editar_anuncio(request, anuncio_id):
+    anuncio = get_object_or_404(Anuncio, id=anuncio_id)
+    docente = request.user.perfil_docente
+
+    # Seguridad: solo el autor puede editar
+    if anuncio.docente != docente:
+        return HttpResponseForbidden("No autorizado")
+
+    # Obtener archivos y links de MongoDB
+    mongo_db = MongoDBConnection.get_db()
+    archivos_raw = mongo_db["archivos_anuncio"].find({"anuncio_id": anuncio.id})
+
+    archivos_mongo = []
+    for archivo in archivos_raw:
+        archivo["id_str"] = str(archivo["_id"])
+        archivos_mongo.append(archivo)
+
+    if request.method == 'POST':
+        form = CrearAnuncioForm(request.POST, request.FILES, instance=anuncio)
+
+        if form.is_valid():
+            form.save()
+
+            # Nuevas imágenes
+            nuevas_imagenes = request.FILES.getlist('imagenes')
+            for img in nuevas_imagenes:
+                ImagenAnuncio.objects.create(anuncio=anuncio, imagen=img)
+
+            # Nuevos archivos (PDF/DOCX)
+            nuevos_archivos = request.FILES.getlist('archivos')
+            for archivo in nuevos_archivos:
+                extension = archivo.name.split('.')[-1].lower()
+                if extension in ['pdf', 'docx']:
+                    contenido_base64 = base64.b64encode(archivo.read()).decode('utf-8')
+                    mongo_db["archivos_anuncio"].insert_one({
+                        "anuncio_id": anuncio.id,
+                        "nombre": archivo.name,
+                        "extension": extension,
+                        "tipo": "documento",
+                        "contenido_base64": contenido_base64,
+                        "fecha": datetime.utcnow()
+                    })
+
+            # Nuevos enlaces
+            links_raw = request.POST.get('links', '')
+            links = [link.strip() for link in links_raw.splitlines() if link.strip()]
+            for link in links:
+                mongo_db["archivos_anuncio"].insert_one({
+                    "anuncio_id": anuncio.id,
+                    "tipo": "link",
+                    "url": link,
+                    "fecha": datetime.utcnow()
+                })
+
+            #messages.success(request, "Anuncio actualizado correctamente.")
+            return redirect('anuncios_por_componente', componente_id=anuncio.componente.id)
+
+    else:
+        form = CrearAnuncioForm(instance=anuncio)
+
+    return render(request, 'docentes/anuncios/editar_anuncio.html', {
+        'form': form,
+        'anuncio': anuncio,
+        'archivos_mongo': archivos_mongo
+    })
+
+@login_required
+@require_POST
+def eliminar_adjunto_anuncio(request, anuncio_id):
+    archivo_id = request.POST.get('archivo_id')
+    docente = request.user.perfil_docente
+
+    anuncio = get_object_or_404(Anuncio, id=anuncio_id)
+    if anuncio.docente != docente:
+        return JsonResponse({'error': 'No autorizado'}, status=403)
+
+    mongo_db = MongoDBConnection.get_db()
+    resultado = mongo_db["archivos_anuncio"].delete_one({
+        "_id": ObjectId(archivo_id),
+        "anuncio_id": anuncio.id
+    })
+
+    if resultado.deleted_count == 1:
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'error': 'Adjunto no encontrado'}, status=404)
+
+@login_required
+@require_POST
+def eliminar_imagen_anuncio(request, anuncio_id):
+    imagen_id = request.POST.get('imagen_id')
+    docente = request.user.perfil_docente
+
+    anuncio = get_object_or_404(Anuncio, id=anuncio_id)
+    if anuncio.docente != docente:
+        return JsonResponse({'error': 'No autorizado'}, status=403)
+
+    imagen = get_object_or_404(ImagenAnuncio, id=imagen_id, anuncio=anuncio)
+    imagen.delete()
+
+    return JsonResponse({'success': True})            
+
+@login_required
+def eliminar_anuncio(request, anuncio_id):
+    anuncio = get_object_or_404(Anuncio, id=anuncio_id)
+    docente = request.user.perfil_docente
+
+    if anuncio.docente != docente:
+        return HttpResponseForbidden("No autorizado")
+
+    # Obtener archivos y links desde Mongo
+    mongo_db = MongoDBConnection.get_db()
+    archivos_mongo = list(mongo_db["archivos_anuncio"].find({"anuncio_id": anuncio.id}))
+
+    if request.method == 'POST':
+        # Eliminar imágenes en Django
+        ImagenAnuncio.objects.filter(anuncio=anuncio).delete()
+
+        # Eliminar archivos y links en Mongo
+        mongo_db["archivos_anuncio"].delete_many({"anuncio_id": anuncio.id})
+
+        # Eliminar el anuncio
+        anuncio.delete()
+
+        return redirect('anuncios_por_componente', componente_id=anuncio.componente.id)
+
+    return render(request, 'docentes/anuncios/eliminar_anuncio.html', {
+        'anuncio': anuncio,
+        'archivos_mongo': archivos_mongo
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -636,12 +1077,21 @@ class ConsultarEntregaView(APIView):
 
         resultado = []
         for entrega in entregas:
+            intento_numero = entrega.get("intento_numero")
+    
+            entrega_obj = EntregaTarea.objects.filter(
+                estudiante=estudiante,
+                asignacion_id=asignacion_id,
+                intento_numero=intento_numero
+            ).first()
+
             resultado.append({
                 '_id': str(entrega['_id']),
-                "intento": entrega.get("intento_numero"),
+                "intento": intento_numero,
                 "fecha": entrega.get("fecha_subida"),
                 "estado": entrega.get("estado"),
-                "archivos": entrega.get("archivos", [])
+                "archivos": entrega.get("archivos", []),
+                "calificacion": entrega_obj.calificacion if entrega_obj else None
             })
 
         return Response({"entregas": resultado})
@@ -689,7 +1139,19 @@ class AsignacionesDisponiblesView(APIView):
         except Estudiante.DoesNotExist:
             return Response({'error': 'Estudiante no válido'}, status=404)
 
-        asignaciones = AsignacionTarea.objects.filter(publicada=True)
+        # Obtener IDs de componentes donde está matriculado activamente
+        componentes_matriculados = Matricula.objects.filter(
+            estudiante=estudiante,
+            activa=True,
+            estado__in=['activa', 'confirmada']
+        ).values_list('componente_cursado_id', flat=True)
+
+        # Filtrar asignaciones visibles del estudiante
+        asignaciones = AsignacionTarea.objects.filter(
+            publicada=True,
+            componente_id__in=componentes_matriculados
+        )
+
         resultado = []
 
         for a in asignaciones:
@@ -698,16 +1160,24 @@ class AsignacionesDisponiblesView(APIView):
                 estudiante=estudiante
             ).exists()
 
+            # Buscar calificación final si existe
+            nota_final_obj = CalificacionFinalTarea.objects.filter(
+                estudiante=estudiante,
+                tarea=a
+            ).first()
+
             resultado.append({
                 'id': a.id,
                 'titulo': a.titulo,
                 'descripcion': a.descripcion,
                 'fecha_entrega': a.fecha_entrega.isoformat(),
                 'intentos_maximos': a.intentos_maximos,
-                'entregado': entregado  
+                'entregado': entregado,
+                'nota_final': nota_final_obj.nota_final if nota_final_obj else None
             })
 
         return Response(resultado)
+
 
 
 
@@ -747,6 +1217,40 @@ class DescargarArchivoView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=500)
+
+
+class AnunciosEstudianteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        usuario = request.user
+
+        # Verificar perfil de estudiante
+        try:
+            estudiante = usuario.perfil_estudiante
+        except:
+            return Response({'error': 'No autorizado'}, status=403)
+
+        # Obtener componentes donde está matriculado
+        componentes_ids = Matricula.objects.filter(estudiante=estudiante).values_list('componente_cursado_id', flat=True)
+
+        # Obtener anuncios publicados
+        anuncios = Anuncio.objects.filter(
+            componente_id__in=componentes_ids,
+            publicada=True
+        ).order_by('-fecha_creacion')
+
+        # Serializar la respuesta
+        resultado = [
+            {
+                'id': a.id,
+                'titulo': a.titulo,
+                'fecha_creacion': a.fecha_creacion.isoformat()
+            }
+            for a in anuncios
+        ]
+
+        return Response(resultado)            
 
 
 

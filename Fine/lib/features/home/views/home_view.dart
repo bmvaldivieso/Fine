@@ -14,6 +14,7 @@ import 'schedule_view.dart';
 import 'notes_view.dart';
 import '../../../widgets/custom_drawer.dart';
 import '../../../widgets/custom_bottom_nav_bar.dart';
+import 'listado_anuncios.dart';
 
 class HomeView extends GetView<HomeController> {
   final int initialIndex;
@@ -26,9 +27,9 @@ class HomeView extends GetView<HomeController> {
 
     final List<Widget> _pages = [
       const ScheduleView(), //Indice 0
-      const CourseView(), //Indice 1
-      const Placeholder(), //Indice 2
-      const Placeholder(), //Indice 3
+      const CourseView(),
+      const Placeholder(), //Indice 2 //Indice 1
+      ListaAnunciosPage(), //Indice 3
       //drawer
       const NotesView(), //Indice 4
       //validacionMatricula la pantalla es llamada si no hay matricula//

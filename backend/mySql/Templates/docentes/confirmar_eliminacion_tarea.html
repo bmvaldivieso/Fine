@@ -1,0 +1,26 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block title %}Eliminar tarea - {{ tarea.titulo }}{% endblock %}
+
+{% block admin_content %}
+  <div class="container mt-4">
+    <h2 class="mb-4 text-danger">¿Está seguro que desea eliminar esta tarea?</h2>
+
+    <div class="alert alert-warning">
+      <strong>Título:</strong> {{ tarea.titulo }}<br>
+      <strong>Fecha de entrega:</strong> {{ tarea.fecha_entrega|date:"d M Y H:i" }}<br>
+      <strong>Intentos máximos:</strong> {{ tarea.intentos_maximos }}
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger me-2">
+        <i class="fas fa-trash-alt me-1"></i> Borrar
+      </button>
+      <a href="{% url 'tareas_componente' tarea.componente.id %}" class="btn btn-secondary">
+        Cancelar
+      </a>
+    </form>
+  </div>
+{% endblock %}
