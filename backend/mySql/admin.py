@@ -15,6 +15,8 @@ admin.site.register(CalificacionFinalTarea)
 admin.site.register(Anuncio)
 admin.site.register(ImagenAnuncio)
 admin.site.register(ComentarioAnuncio)
+admin.site.register(PublicacionNotas)
+admin.site.register(Administrador)
 
 #admin.site.register(AsignacionTarea)
 @admin.register(AsignacionTarea)

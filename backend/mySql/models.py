@@ -167,6 +167,12 @@ class Matricula(models.Model):
         return f"Matrícula de {self.estudiante.nombres_apellidos} en {self.componente_cursado.nombre if self.componente_cursado else 'N/A'}"
 
 
+
+
+
+
+
+
 # Calificaciones
 class Nota(models.Model):
     BIMESTRES = [(1, 'Primer Bimestre'), (2, 'Segundo Bimestre')]
@@ -187,6 +193,7 @@ class Nota(models.Model):
     class Meta:
         unique_together = ('estudiante', 'componente', 'bimestre')
 
+    @property
     def calcular_nota_bimestre(self):
         return round(
             float(self.tareas) * 0.4 +
@@ -198,6 +205,39 @@ class Nota(models.Model):
 
     def __str__(self):
         return f"{self.estudiante.nombres_apellidos} - {self.componente.nombre} - Bimestre {self.bimestre}"
+
+
+class PublicacionNotas(models.Model):
+    componente = models.OneToOneField(Componente, on_delete=models.CASCADE)
+    habilitado = models.BooleanField(default=False)
+    fecha_inicio = models.DateTimeField(default=timezone.now)
+    fecha_fin = models.DateTimeField(null=True, blank=True)  
+
+    def esta_activa(self):
+        """Verifica si actualmente está habilitada la publicación"""
+        ahora = timezone.now()
+        if self.habilitado:
+            if self.fecha_fin:
+                return self.fecha_inicio <= ahora <= self.fecha_fin
+            return ahora >= self.fecha_inicio
+        return False
+
+    def __str__(self):
+        estado = "Habilitado" if self.esta_activa() else "Deshabilitado"
+        return f"Publicación para {self.componente.nombre} - {estado}"
+
+class Administrador(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name="perfil_administrador")
+    nombres_apellidos = models.CharField(max_length=150)
+    email = models.EmailField(unique=True)
+    celular = models.CharField(max_length=15, unique=True)
+    imagen_perfil = models.ImageField(upload_to='administradores/perfil/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Administrador: {self.usuario.username}"
+
+
+
 
 
 

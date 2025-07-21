@@ -171,3 +171,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'carlosmlo381@gmail.com' 
 EMAIL_HOST_PASSWORD = 'sraj uiwt xzpf llvu' 
 
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+ 

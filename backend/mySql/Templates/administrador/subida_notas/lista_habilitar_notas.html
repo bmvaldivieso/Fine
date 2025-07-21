@@ -1,0 +1,63 @@
+{% extends 'administrador/administrador_master.html' %}
+{% load static %}
+
+{% block title %}Habilitar Notas{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Habilitar Notas</h2>
+    <table id="tabla-componentes" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Componente</th>
+                <th>Programa Académico</th>
+                <th>Periodo</th>
+                <th>Horario</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in registros %}
+            <tr>
+                <td>{{ registro.componente.nombre }}</td>
+                <td>{{ registro.componente.get_programa_academico_display }}</td>
+                <td>{{ registro.componente.periodo }}</td>
+                <td>{{ registro.componente.horario }}</td>
+                <td>
+                    <a href="{% url 'administrador_habilitar_notas' registro.componente.id %}"
+                        class="btn btn-sm btn-primary">Seleccionar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No se han habilitado notas aún.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-end mt-4">
+        <a href="{% url 'administrador_crear_publicacion' %}" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i> Registrar Componente
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+{% if registros %}
+<script>
+    $(document).ready(function () {
+        $('#tabla-componentes').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            }
+        });
+    });
+</script>
+{% endif %}
+
+{% endblock %}

@@ -26,8 +26,7 @@
 <body>
   <aside class="sidebar-admin">
     <div class="logo-section">
-      <img src="{% static 'images/logo2.png' %}" alt="Fine-Tuned English" class="img-fluid"
-        id="logo-admin-sidebar" />
+      <img src="{% static 'images/logo2.png' %}" alt="Fine-Tuned English" class="img-fluid" id="logo-admin-sidebar" />
     </div>
 
     <div class="profile-section">
@@ -44,8 +43,10 @@
         class="nav-item {% if request.resolver_match.url_name == 'componentes_docente_anuncio' %}active{% endif %}">
         <i class="fas fa-bullhorn"></i><span>Anuncios</span>
       </a>
-      <a href="#" class="nav-item" id="nav-notas"><i class="fas fa-file"></i>
-        <span>Notas</span></a>
+      <a href="{% url 'componentes_docente_notas' %}"
+        class="nav-item {% if request.resolver_match.url_name == 'componentes_docente_notas' %}active{% endif %}">
+        <i class="fas fa-graduation-cap"></i><span>Notas</span>
+      </a>
     </nav>
 
     <div class="login-button-container">
@@ -63,43 +64,49 @@
     <div class="top-bar-admin">
       <h2 id="section-title-admin">
         {% if request.resolver_match.url_name == 'docente_login' %}
-          Inicio de sesión
+        Inicio de sesión
         {% elif request.resolver_match.url_name == 'docente_redirect' %}
-          Redireccionamiento
+        Redireccionamiento
         {% elif request.resolver_match.url_name == 'docente_bienvenida' %}
-          Bienvenida
+        Bienvenida
         {% elif request.resolver_match.url_name == 'logout_docente' %}
-          Cierre de sesión
+        Cierre de sesión
         {% elif request.resolver_match.url_name == 'componentes_docente' %}
-          Tareas
+        Tareas
         {% elif request.resolver_match.url_name == 'tareas_componente' %}
-          Tareas del componente
+        Tareas del componente
         {% elif request.resolver_match.url_name == 'crear_tarea' %}
-          Crear tarea
+        Crear tarea
         {% elif request.resolver_match.url_name == 'editar_tarea' %}
-          Editar tarea
+        Editar tarea
         {% elif request.resolver_match.url_name == 'eliminar_tarea' %}
-          Eliminar tarea
+        Eliminar tarea
         {% elif request.resolver_match.url_name == 'calificar_entrega' %}
-          Calificar entrega
+        Calificar entrega
         {% elif request.resolver_match.url_name == 'obtener_archivos_entrega' %}
-          Archivos adjuntos
+        Archivos adjuntos
         {% elif request.resolver_match.url_name == 'ver_pdf_mongo' %}
-          Vista de archivo
+        Vista de archivo
         {% elif request.resolver_match.url_name == 'descargar_archivo_mongo' %}
-          Descargar archivo
+        Descargar archivo
         {% elif request.resolver_match.url_name == 'lista_estudiantes_entregaron' %}
-          Estudiantes entregantes
+        Estudiantes entregantes
         {% elif request.resolver_match.url_name == 'entregas_estudiante_tarea' %}
-          Entregas del estudiante
+        Entregas del estudiante
         {% elif request.resolver_match.url_name == 'componentes_docente_anuncio' %}
-          Anuncios
+        Anuncios
         {% elif request.resolver_match.url_name == 'anuncios_por_componente' %}
-          Lista de Anuncios
+        Lista de Anuncios
+        {% elif request.resolver_match.url_name == 'componentes_docente_notas' %}
+        Notas
+        {% elif request.resolver_match.url_name == 'estudiantes_componente' %}
+        Listado de Estudiantes
+        {% elif request.resolver_match.url_name == 'editar_nota' %}
+        Editar Nota Estudiante
         {% else %}
-          Contenido
+        Contenido
         {% endif %}
-      </h2>      
+      </h2>
 
       <div class="topbar-right-group d-flex align-items-center gap-3">
         <div class="notification-icon">

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lms_english_app/core/models/anuncio_model.dart';
 import 'package:lms_english_app/core/services/anuncios_service.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
+import 'package:lms_english_app/features/home/views/detalle_anuncio_page.dart';
 
 class ListaAnunciosPage extends StatefulWidget {
   const ListaAnunciosPage({super.key});
+  
 
   @override
   _ListaAnunciosPageState createState() => _ListaAnunciosPageState();
@@ -97,7 +99,13 @@ class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
                       const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () {
-                          // Futuro: abrir pantalla de detalle
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  DetalleAnuncioPage(anuncioId: anuncio.id),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.indigo.shade600,

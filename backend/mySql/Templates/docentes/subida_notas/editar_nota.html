@@ -1,0 +1,92 @@
+{% extends 'docentes/docente_master.html' %}
+{% load static custom_filters %}
+
+{% block title %}Editar Notas - {{ estudiante.usuario.get_full_name }}{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Editar notas: <strong>{{ estudiante.usuario.get_full_name }}</strong></h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form, nota in pares %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>Bimestre {{ forloop.counter }}</strong>
+                <span class="badge bg-success nota-calculada" data-index="{{ forloop.counter0 }}">
+                    Nota calculada: {{ nota.calcular_nota_bimestre }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.tareas.id_for_label }}">Tareas</label>
+                    {{ form.tareas|add_class:"nota-input" }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.lecciones.id_for_label }}">Lecciones</label>
+                    {{ form.lecciones|add_class:"nota-input" }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.grupales.id_for_label }}">Grupales</label>
+                    {{ form.grupales|add_class:"nota-input" }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.individuales.id_for_label }}">Individuales</label>
+                    {{ form.individuales|add_class:"nota-input" }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.inasistencias.id_for_label }}">Inasistencias</label>
+                    {{ form.inasistencias }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Actualizar Notas
+        </button>
+        <a href="{% url 'estudiantes_componente_notas' componente.id %}" class="btn btn-secondary ms-2">
+            Cancelar
+        </a>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function calcularNota(formCard) {
+    const getValor = name => {
+      const input = formCard.querySelector(`[name$="${name}"]`);
+      return input ? parseFloat(input.value) || 0 : 0;
+    };
+    const tareas = getValor("tareas");
+    const lecciones = getValor("lecciones");
+    const grupales = getValor("grupales");
+    const individuales = getValor("individuales");
+    return (tareas * 0.4 + lecciones * 0.2 + grupales * 0.2 + individuales * 0.2).toFixed(2);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach((card, index) => {
+      const inputs = card.querySelectorAll(".nota-input");
+      const badge = card.querySelector(".nota-calculada");
+
+      const actualizarNota = () => {
+        const nota = calcularNota(card);
+        if (badge) badge.textContent = `Nota calculada: ${nota}`;
+      };
+
+      inputs.forEach(input => {
+        input.addEventListener("input", actualizarNota);
+      });
+    });
+  });
+</script>
+{% endblock %}

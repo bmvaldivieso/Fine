@@ -1,7 +1,10 @@
 from django.urls import path
 from .views import CustomTokenObtainPairView,EnviarCodigoVerificacionView,RecivValidateCodView,RegistroCompletoView,NotasView,ComponentesDisponiblesView,CrearMatriculaView,registrar_datos_pago,PerfilEstudianteView,EntregarTareaView,ConsultarEntregaView,IntentosRestantesView,AsignacionesDisponiblesView,DescargarArchivoView,login_docente_view,docente_redirect,docentes_bienvenida,logout_docente_view,componentes_docente,tareas_componente,crear_tarea,editar_tarea,eliminar_tarea,calificar_entrega,obtener_archivos_entrega,descargar_archivo_mongo,ver_pdf_mongo,lista_estudiantes_entregaron,entregas_estudiante_tarea  # Asegúrate de importar EspecialidadesView
 from .views import componentes_docente_anuncio, anuncios_por_componente, crear_anuncio, editar_anuncio, eliminar_anuncio, eliminar_adjunto_anuncio, eliminar_imagen_anuncio
-from .views import AnunciosEstudianteAPIView
+from .views import AnunciosEstudianteAPIView, AnuncioDetalleEstudianteAPIView, DescargarArchivoAnuncioView
+from .views import componentes_docente_notas, estudiantes_componente_notas, editar_nota_notas
+from .views import lista_habilitar_notas, info_estudiantes, listado_docentes,login_administrador_view,administrador_redirect,administrador_bienvenida,logout_administrador_view
+from .views import administrador_habilitar_notas, administrador_crear_publicacion
 
 urlpatterns = [
     #flutter
@@ -19,8 +22,11 @@ urlpatterns = [
     path('asignaciones/<int:asignacion_id>/intentos/', IntentosRestantesView.as_view(), name='intentos-restantes'),
     path('asignaciones/', AsignacionesDisponiblesView.as_view(), name='asignaciones-disponibles'),
     path('descargar/<str:entrega_id>/<str:nombre_archivo>/', DescargarArchivoView.as_view()),
-    #anuncios
+    #anuncios-estudiantes
     path('api/estudiante/anuncios/', AnunciosEstudianteAPIView.as_view(), name='anuncios_estudiante_view'),
+    path('api/estudiante/anuncio/<str:anuncio_id>/', AnuncioDetalleEstudianteAPIView.as_view(), name='anuncio_detalle_estudiante'),
+    path('api/descargar/anuncio/<str:anuncio_id>/<str:nombre_archivo>/', DescargarArchivoAnuncioView.as_view(), name='descargar_archivo_anuncio'),
+
 
 
     #docentes
@@ -47,6 +53,22 @@ urlpatterns = [
     path('docente/componente/<int:anuncio_id>/anuncios/eliminar-adjunto/', eliminar_adjunto_anuncio, name='eliminar_adjunto_anuncio'),
     path('docente/anuncio/<int:anuncio_id>/eliminar-imagen/', eliminar_imagen_anuncio, name='eliminar_imagen_anuncio'),
     path('docente/anuncio/<int:anuncio_id>/eliminar/', eliminar_anuncio, name='eliminar_anuncio'),
+    #docente-notas
+    path('docente/componentes_notas/', componentes_docente_notas, name='componentes_docente_notas'),
+    path('docente/componente/<int:componente_id>/notas/', estudiantes_componente_notas, name='estudiantes_componente_notas'),
+    path('docente/notas/editar/<int:estudiante_id>/<int:componente_id>/', editar_nota_notas, name='editar_nota_notas'),
+
+
+    #administardor
+    path('administrador/lista_habilitar_notas/', lista_habilitar_notas, name='lista_habilitar_notas'),
+    path('administrador/info_estudiantes/', info_estudiantes, name='info_estudiantes'),
+    path('administrador/listado_docentes/', listado_docentes, name='listado_docentes'),
+    path('administrador/login/', login_administrador_view, name='administrador_login'),
+    path('administrador/logout/', logout_administrador_view, name='administrador_logout'),
+    path('administrador/bienvenida/', administrador_bienvenida, name='administrador_bienvenida'),
+    path('administrador/redirect/', administrador_redirect, name='administrador_redirect'),
+    path('administrador/habilitar_notas/<int:componente_id>/', administrador_habilitar_notas, name='administrador_habilitar_notas'),
+    path('administrador/crear_publicacion/', administrador_crear_publicacion, name='administrador_crear_publicacion'),
 
 
 

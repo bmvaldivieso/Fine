@@ -2,7 +2,7 @@
 
 {% block admin_content %}
   <div class="container">
-    <h1>Bienvenido, {{ request.user.first_name }}</h1>
+    <h1>Bienvenido, {{ perfil.nombres_apellidos }}</h1>
     <a href="{% url 'componentes_docente' %}" class="btn btn-primary">Iniciar</a>
   </div>
 {% endblock %}

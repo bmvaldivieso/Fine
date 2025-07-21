@@ -46,6 +46,13 @@ from django.http import HttpResponse
 #Docente
 from .forms import LoginDocenteForm, AsignacionTareaForm, CrearAnuncioForm
 from django.views.decorators.http import require_POST
+from .forms import NotaForm
+from django.forms import modelformset_factory
+from .models import Nota
+
+#Administrador
+from .forms import LoginAdministradorForm
+from .forms import PublicacionNotasForm, PublicacionNotasEditarForm
 
 
 # Docentes
@@ -58,7 +65,8 @@ def docente_redirect(request):
 
 @login_required
 def docentes_bienvenida(request):
-    return render(request, 'docentes/docente_bienvenida.html')        
+    perfil = getattr(request.user, 'perfil_docente', None)
+    return render(request, 'docentes/docente_bienvenida.html', {'perfil': perfil})        
 
 
 def login_docente_view(request):
@@ -523,9 +531,217 @@ def eliminar_anuncio(request, anuncio_id):
 
 
 
+# Vistas de subida de notas profesor
+@login_required
+def componentes_docente_notas(request):
+    docente = request.user.perfil_docente
+    componentes = Componente.objects.filter(docentes_asignados__docente=docente).distinct()
+    habilitados = PublicacionNotas.objects.filter(componente__in=componentes, habilitado=True)
+
+    return render(request, 'docentes/subida_notas/componentes_docente_notas.html', {
+        'componentes': [h.componente for h in habilitados]
+    })
+
+
+@login_required
+def estudiantes_componente_notas(request, componente_id):
+    componente = get_object_or_404(Componente, id=componente_id)
+    docente = request.user.perfil_docente
+    matriculas = Matricula.objects.filter(componente_cursado=componente).select_related('estudiante')
+
+    estudiantes = []
+    for m in matriculas:
+        nota = Nota.objects.filter(
+            estudiante=m.estudiante,
+            componente=componente,
+            docente=docente
+        ).first() 
+
+        estudiantes.append({
+            'id': m.estudiante.id,
+            'nombres_apellidos': m.estudiante.nombres_apellidos,
+            'identificacion': m.estudiante.identificacion,
+            'email': m.estudiante.email,
+            'nota_id': nota.id if nota else None,  
+        })
+
+    return render(request, 'docentes/subida_notas/estudiantes_componente.html', {
+        'componente': componente,
+        'estudiantes': estudiantes
+    })
+
+@login_required
+def editar_nota_notas(request, estudiante_id, componente_id):
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    componente = get_object_or_404(Componente, id=componente_id)
+    docente = request.user.perfil_docente
+
+    notas = Nota.objects.filter(estudiante=estudiante, componente=componente, docente=docente).order_by('bimestre')
+
+    # Crear notas si no existen para ambos bimestres
+    bimestres = [1, 2]
+    notas_existentes = Nota.objects.filter(estudiante=estudiante, componente=componente)
+
+    bimestres_existentes = set(notas_existentes.values_list('bimestre', flat=True))
+    bimestres_faltantes = [b for b in bimestres if b not in bimestres_existentes]
+
+    for b in bimestres_faltantes:
+        Nota.objects.create(
+            estudiante=estudiante,
+            componente=componente,
+            docente=docente,
+            bimestre=b
+        )
+
+    # Consulta actualizada luego de crear las que faltaban
+    notas = Nota.objects.filter(estudiante=estudiante, componente=componente).order_by('bimestre')
+
+    NotaFormSet = modelformset_factory(
+        Nota,
+        fields=['tareas', 'lecciones', 'grupales', 'individuales', 'inasistencias'],
+        extra=0
+    )
+
+    if request.method == 'POST':
+        formset = NotaFormSet(request.POST, queryset=notas)
+        print(formset.errors)  # útil durante desarrollo
+
+        if formset.is_valid():
+            formset.save()
+            return redirect('estudiantes_componente_notas', componente_id=componente.id)
+    else:
+        formset = NotaFormSet(queryset=notas)
+
+    pares = zip(formset.forms, notas)    
+
+    return render(request, 'docentes/subida_notas/editar_nota.html', {
+        'formset': formset,
+        'notas': notas,
+        'estudiante': estudiante,
+        'componente': componente,
+        'pares': pares,
+    })
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Vistas del Administrador
+@login_required
+def administrador_redirect(request):
+    if hasattr(request.user, 'perfil_administrador'):
+        return redirect('administrador_bienvenida')
+    else:
+        return redirect('administrador_login') 
+
+@login_required
+def administrador_bienvenida(request):
+    perfil = getattr(request.user, 'perfil_administrador', None)
+
+    return render(request, 'administrador/login/administrador_bienvenida.html', {
+        'perfil': perfil
+    })     
+
+def login_administrador_view(request):
+    form = LoginAdministradorForm()
+
+    if request.method == 'POST':
+        form = LoginAdministradorForm(request.POST)
+        if form.is_valid():
+            correo = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            try:
+                user = User.objects.get(email=correo)
+            except User.DoesNotExist:
+                messages.error(request, 'Correo no registrado.')
+                return render(request, 'administrador/login/administrador_login.html', {'form': form})
+
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                if hasattr(user, 'perfil_administrador'):
+                    login(request, user)
+                    return redirect('administrador_redirect')
+                else:
+                    return HttpResponseForbidden("Acceso no autorizado para este panel.")
+            else:
+                messages.error(request, 'Credenciales incorrectas.')
+
+    return render(request, 'administrador/login/administrador_login.html', {'form': form})
+
+@login_required
+def logout_administrador_view(request):
+    logout(request)
+    return redirect('administrador_login') 
+
+
+
+@login_required
+def lista_habilitar_notas(request):
+    registros = PublicacionNotas.objects.all()
+
+    return render(request, 'administrador/subida_notas/lista_habilitar_notas.html', {
+        'registros': registros
+    })
+
+@login_required
+def administrador_habilitar_notas(request, componente_id):
+    componente = get_object_or_404(Componente, id=componente_id)
+
+    publicacion, created = PublicacionNotas.objects.get_or_create(componente=componente)
+
+    if request.method == 'POST':
+        form = PublicacionNotasEditarForm(request.POST, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_habilitar_notas')
+    else:
+        form = PublicacionNotasEditarForm(instance=publicacion)
+
+    return render(request, 'administrador/subida_notas/habilitar_notas.html', {
+        'form': form,
+        'componente': componente
+    })
+
+@login_required
+def administrador_crear_publicacion(request):
+    if request.method == 'POST':
+        form = PublicacionNotasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_habilitar_notas')
+    else:
+        form = PublicacionNotasForm()
+
+    return render(request, 'administrador/subida_notas/habilitar_nuevo.html', {
+        'form': form
+    })
+
+
+
+@login_required
+def info_estudiantes(request):
+    return render(request, 'administrador/estudiantes_info/info_estudiantes.html')
+
+
+@login_required
+def listado_docentes(request):
+    return render(request, 'administrador/agregar_docentes/lista_docentes.html')
 
 
 
@@ -1225,22 +1441,18 @@ class AnunciosEstudianteAPIView(APIView):
     def get(self, request):
         usuario = request.user
 
-        # Verificar perfil de estudiante
         try:
             estudiante = usuario.perfil_estudiante
         except:
             return Response({'error': 'No autorizado'}, status=403)
 
-        # Obtener componentes donde está matriculado
         componentes_ids = Matricula.objects.filter(estudiante=estudiante).values_list('componente_cursado_id', flat=True)
 
-        # Obtener anuncios publicados
         anuncios = Anuncio.objects.filter(
             componente_id__in=componentes_ids,
             publicada=True
         ).order_by('-fecha_creacion')
 
-        # Serializar la respuesta
         resultado = [
             {
                 'id': a.id,
@@ -1250,11 +1462,110 @@ class AnunciosEstudianteAPIView(APIView):
             for a in anuncios
         ]
 
-        return Response(resultado)            
+        return Response(resultado)          
 
 
+class AnuncioDetalleEstudianteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, anuncio_id):
+        usuario = request.user
+
+        try:
+            estudiante = usuario.perfil_estudiante
+        except AttributeError:
+            return Response({'error': 'No autorizado'}, status=403)
+
+        componentes_ids = estudiante.matriculas.values_list('componente_cursado_id', flat=True)
+
+        try:
+            anuncio = Anuncio.objects.get(id=anuncio_id, publicada=True)
+        except Anuncio.DoesNotExist:
+            return Response({'error': 'Anuncio no encontrado'}, status=404)
+
+        if anuncio.componente_id not in componentes_ids:
+            return Response({'error': 'No tiene acceso a este anuncio'}, status=403)
+
+        # 🔹 Imágenes
+        imagenes = [
+            request.build_absolute_uri(img.imagen.url)
+            for img in anuncio.imagenes.all()
+        ]
+
+        # 🔹 Archivos con enlaces al endpoint personalizado
+        archivos_cursor = MongoDBConnection.get_anuncios_collection().find({'anuncio_id': anuncio.id})
+        archivos = []
+        for archivo in archivos_cursor:
+            nombre = archivo.get('nombre', '')
+            tipo = archivo.get('tipo', 'pdf')
+            url_base = request.build_absolute_uri(
+                f"/api/descargar/anuncio/{anuncio.id}/{nombre}"
+            )
+            archivos.append({
+                'nombre': nombre,
+                'tipo': tipo,
+                'url': url_base
+            })
+
+        # 🔹 Enlaces simples
+        enlaces_cursor = MongoDBConnection.get_db()["archivos_anuncio"].find({
+            'anuncio_id': anuncio.id,
+            'tipo': 'link'  
+        })
+        enlaces = []
+        for enlace in enlaces_cursor:
+            url = enlace.get('url', '')
+            nombre = enlace.get('nombre') or url.split('//')[-1].split('/')[0]  
+            enlaces.append({
+                'nombre': nombre,
+                'url': url
+            })
 
 
+        # 🔹 JSON final
+        resultado = {
+            'id': anuncio.id,
+            'titulo': anuncio.titulo,
+            'contenido': anuncio.contenido,
+            'imagenes': imagenes,
+            'archivos': archivos,
+            'enlaces': enlaces,
+            'fecha_creacion': anuncio.fecha_creacion.isoformat()
+        }
+
+        return Response(resultado)
+
+class DescargarArchivoAnuncioView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, anuncio_id, nombre_archivo):
+        try:
+            coleccion = MongoDBConnection.get_anuncios_collection()
+            
+            archivo = coleccion.find_one({
+                'anuncio_id': int(anuncio_id),
+                'nombre': nombre_archivo
+            })
+
+            if not archivo:
+                return Response({'error': 'Archivo no encontrado'}, status=404)
+
+            contenido_base64 = archivo.get('contenido_base64', '')
+            contenido_binario = base64.b64decode(contenido_base64)
+
+            extension = archivo.get('extension', 'pdf').lower()
+            mime_type = 'application/pdf' if extension == 'pdf' else \
+                'application/octet-stream'
+
+            preview = request.GET.get('preview') == 'true'
+            disposition = 'inline' if preview else 'attachment'
+
+            response = HttpResponse(contenido_binario, content_type=mime_type)
+            response['Content-Disposition'] = f'{disposition}; filename="{nombre_archivo}"'
+            return response
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
 
 
 
