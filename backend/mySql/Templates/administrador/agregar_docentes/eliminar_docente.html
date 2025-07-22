@@ -1,0 +1,33 @@
+{% extends 'administrador/administrador_master.html' %}
+{% load static %}
+
+{% block title %}Eliminar docente - {{ docente.nombres_apellidos }}{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-danger">⚠ Confirmación de eliminación</h2>
+
+  <div class="alert alert-warning">
+    <strong>Nombre completo:</strong> {{ docente.nombres_apellidos }}<br>
+    <strong>Email:</strong> {{ docente.email }}<br>
+    <strong>Celular:</strong> {{ docente.celular }}<br>
+    {% if docente.imagen_perfil %}
+      <strong>Foto:</strong> <img src="{{ docente.imagen_perfil.url }}" alt="Foto" width="60">
+    {% else %}
+      <strong>Foto:</strong> No registrada
+    {% endif %}
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <button type="submit" class="btn btn-danger me-2">
+        <i class="fas fa-trash-alt me-1"></i> Eliminar docente
+      </button>
+      <a href="{% url 'listado_docentes' %}" class="btn btn-secondary">
+        Cancelar
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

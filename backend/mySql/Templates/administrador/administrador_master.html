@@ -26,12 +26,18 @@
 <body>
   <aside class="sidebar-admin">
     <div class="logo-section">
-      <img src="{% static 'images/logo2.png' %}" alt="Fine-Tuned English" class="img-fluid" id="logo-admin-sidebar" />
+      <img src="{% static 'img/logo.png' %}" alt="Fine-Tuned English" class="img-fluid" id="logo-admin-sidebar" />
     </div>
 
     <div class="profile-section">
-      <img src="{% static 'images/imagen2.png' %}" alt="Usuario Docente" class="profile-pic" />
-      <p class="profile-name">Carlos Lopez</p>
+      {% if user.perfil_administrador.imagen_perfil %}
+      <img src="{{ user.perfil_administrador.imagen_perfil.url }}" alt="Imagen Perfil" class="img-fluid"
+                        style="max-width: 90px;">
+      {% else %}
+      <img src="{% static 'img/perfil.jpg' %}" alt="Imagen Perfil" class="img-fluid"
+                        style="max-width: 90px;">
+      {% endif %}
+      <p class="profile-name">{{ user.perfil_administrador.nombres_apellidos }}</p>
     </div>
 
     <nav class="nav-links">

@@ -53,6 +53,14 @@ from .models import Nota
 #Administrador
 from .forms import LoginAdministradorForm
 from .forms import PublicacionNotasForm, PublicacionNotasEditarForm
+from .models import Docente
+from .forms import DocenteUserForm
+from .forms import DocenteUserEditForm
+from .models import Estudiante
+from .models import Matricula
+from .models import Componente
+from django.db.models import Count
+
 
 
 # Docentes
@@ -732,16 +740,81 @@ def administrador_crear_publicacion(request):
         'form': form
     })
 
+@login_required
+def listado_docentes(request):
+    docentes = Docente.objects.all()
+    total_docentes = docentes.count()
+    return render(request, 'administrador/agregar_docentes/lista_docentes.html', {
+        'docentes': docentes,
+        'total_docentes': total_docentes
+    })
+
+@login_required
+def agregar_docente(request):
+    if request.method == 'POST':
+        form = DocenteUserForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('listado_docentes')
+    else:
+        form = DocenteUserForm()
+
+    return render(request, 'administrador/agregar_docentes/agregar_docente.html', {
+        'form': form
+    })   
+
+@login_required
+def editar_docente(request, docente_id):
+    docente = get_object_or_404(Docente, id=docente_id)
+
+    if request.method == 'POST':
+        form = DocenteUserEditForm(request.POST, request.FILES, instance=docente)
+        if form.is_valid():
+            form.save()
+            return redirect('listado_docentes')
+    else:
+        form = DocenteUserEditForm(instance=docente)
+
+    return render(request, 'administrador/agregar_docentes/editar_docente.html', {
+        'form': form,
+        'docente': docente
+    })    
+
+@login_required
+def eliminar_docente(request, docente_id):
+    docente = get_object_or_404(Docente, id=docente_id)
+    usuario = docente.user  
+
+    if request.method == 'POST':
+        usuario.delete()  
+        return redirect('listado_docentes')
+
+    return render(request, 'administrador/agregar_docentes/eliminar_docente.html', {
+        'docente': docente
+    })
 
 
 @login_required
 def info_estudiantes(request):
-    return render(request, 'administrador/estudiantes_info/info_estudiantes.html')
+    estudiantes = Estudiante.objects.all()
+    total_estudiantes = estudiantes.count()
+
+    estudiantes_por_componente = (
+        Matricula.objects
+        .values('componente_cursado__nombre', 'componente_cursado__programa_academico')
+        .annotate(total=Count('estudiante'))
+        .order_by('componente_cursado__nombre')
+    )
+
+    context = {
+        'estudiantes': estudiantes,
+        'total_estudiantes': total_estudiantes,
+        'estudiantes_por_componente': estudiantes_por_componente,
+    }
+    return render(request, 'administrador/estudiantes_info/info_estudiantes.html', context)
 
 
-@login_required
-def listado_docentes(request):
-    return render(request, 'administrador/agregar_docentes/lista_docentes.html')
+
 
 
 
@@ -1160,7 +1233,7 @@ class NotasView(APIView, ValidateMatriculaMixin):
             componente_nombre = nota.componente.nombre
             resultado.setdefault(componente_nombre, {'componente': componente_nombre, 'notas': []})
 
-            nota_bimestre = nota.calcular_nota_bimestre()
+            nota_bimestre = nota.calcular_nota_final()
             resultado[componente_nombre]['notas'].append({
                 'bimestre': nota.bimestre,
                 'tareas': nota.tareas,

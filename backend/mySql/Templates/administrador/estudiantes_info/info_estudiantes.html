@@ -1,0 +1,75 @@
+{% extends 'administrador/administrador_master.html' %}
+{% load static %}
+
+{% block title %}Estudiantes{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Estudiantes</h2>
+    <div class="mb-3">
+        <span class="badge bg-primary fs-6">Total: {{ total_estudiantes }} estudiantes</span>
+    </div>
+    <hr>
+    <table id="tabla-estudiantes" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Celular</th>
+                <th>Programa Académico</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{ estudiante.nombres_apellidos }}</td>
+                <td>{{ estudiante.email }}</td>
+                <td>{{ estudiante.celular }}</td>
+                <td>{{ estudiante.get_programa_academico_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <h4 class="mt-5">Estudiantes por Componente</h4>
+    <hr>
+    <table id="tabla-componentes" class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Componente</th>
+                <th>Programa Académico</th>
+                <th>Número de Estudiantes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grupo in estudiantes_por_componente %}
+            <tr>
+                <td>{{ grupo.componente_cursado__nombre }}</td>
+                <td>{{ grupo.componente_cursado__programa_academico|title }}</td>
+                <td>{{ grupo.total }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">No hay estudiantes matriculados aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#tabla-estudiantes').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' }
+        });
+        $('#tabla-componentes').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' }
+        });
+    });
+</script>
+{% endblock %}

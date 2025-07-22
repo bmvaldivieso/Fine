@@ -4,7 +4,8 @@ from .views import componentes_docente_anuncio, anuncios_por_componente, crear_a
 from .views import AnunciosEstudianteAPIView, AnuncioDetalleEstudianteAPIView, DescargarArchivoAnuncioView
 from .views import componentes_docente_notas, estudiantes_componente_notas, editar_nota_notas
 from .views import lista_habilitar_notas, info_estudiantes, listado_docentes,login_administrador_view,administrador_redirect,administrador_bienvenida,logout_administrador_view
-from .views import administrador_habilitar_notas, administrador_crear_publicacion
+from .views import administrador_habilitar_notas, administrador_crear_publicacion   
+from .views import agregar_docente, editar_docente, eliminar_docente
 
 urlpatterns = [
     #flutter
@@ -62,13 +63,19 @@ urlpatterns = [
     #administardor
     path('administrador/lista_habilitar_notas/', lista_habilitar_notas, name='lista_habilitar_notas'),
     path('administrador/info_estudiantes/', info_estudiantes, name='info_estudiantes'),
-    path('administrador/listado_docentes/', listado_docentes, name='listado_docentes'),
+    
     path('administrador/login/', login_administrador_view, name='administrador_login'),
     path('administrador/logout/', logout_administrador_view, name='administrador_logout'),
     path('administrador/bienvenida/', administrador_bienvenida, name='administrador_bienvenida'),
     path('administrador/redirect/', administrador_redirect, name='administrador_redirect'),
     path('administrador/habilitar_notas/<int:componente_id>/', administrador_habilitar_notas, name='administrador_habilitar_notas'),
     path('administrador/crear_publicacion/', administrador_crear_publicacion, name='administrador_crear_publicacion'),
+    #administrador-docentes
+    path('administrador/listado_docentes/', listado_docentes, name='listado_docentes'),
+    path('administrador/agregar_docente/', agregar_docente, name='agregar_docente'),
+    path('docentes/<int:docente_id>/editar/', editar_docente, name='editar_docente'),
+    path('docentes/<int:docente_id>/eliminar/', eliminar_docente, name='eliminar_docente'),
+
 
 
 

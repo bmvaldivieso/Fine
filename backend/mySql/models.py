@@ -203,6 +203,15 @@ class Nota(models.Model):
             2
     )
 
+    def calcular_nota_final(self):
+        return round(
+            float(self.tareas) * 0.4 +
+            float(self.lecciones) * 0.2 +
+            float(self.grupales) * 0.2 +
+            float(self.individuales) * 0.2,
+            2
+    )
+
     def __str__(self):
         return f"{self.estudiante.nombres_apellidos} - {self.componente.nombre} - Bimestre {self.bimestre}"
 
