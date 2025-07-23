@@ -61,6 +61,12 @@ from .models import Matricula
 from .models import Componente
 from django.db.models import Count
 
+#Notificaciones
+from .utils.notificaciones import crear_notificacion
+from django.utils.timezone import localtime
+
+
+
 
 
 # Docentes
@@ -150,6 +156,14 @@ def crear_tarea(request, componente_id):
                 defaults={'nota_final': 0.0}
             )
 
+        # 🔔 Crear notificación de nueva tarea
+        crear_notificacion(
+            autor=docente,
+            tipo='nueva_tarea',
+            descripcion=f"Se ha creado la tarea '{tarea.titulo}' en el componente '{componente.nombre}'",
+            tarea=tarea
+        )
+
         return redirect('tareas_componente', componente_id=componente.id)
 
     return render(request, 'docentes/crear_tarea.html', {'form': form, 'componente': componente})
@@ -159,10 +173,23 @@ def crear_tarea(request, componente_id):
 def editar_tarea(request, tarea_id):
     tarea = get_object_or_404(AsignacionTarea, id=tarea_id, docente=request.user.perfil_docente)
     form = AsignacionTareaForm(request.POST or None, instance=tarea)
+
+    fecha_anterior = tarea.fecha_entrega  # Guarda la fecha original
+
     if request.method == 'POST' and form.is_valid():
-        form.save()
-        #messages.success(request, 'Tarea actualizada.')
+        tarea_editada = form.save()
+
+        # 🔔 Verificar cambio de fecha y notificar
+        if fecha_anterior != tarea_editada.fecha_entrega:
+            crear_notificacion(
+                autor=request.user.perfil_docente,
+                tipo='cambio_fecha',
+                descripcion=f"La fecha de entrega de la tarea '{tarea.titulo}' fue modificada.",
+                tarea=tarea
+            )
+
         return redirect('tareas_componente', componente_id=tarea.componente.id)
+
     return render(request, 'docentes/editar_tarea.html', {'form': form, 'tarea': tarea})
 
 @login_required
@@ -205,6 +232,14 @@ def calificar_entrega(request, entrega_id):
             estudiante=entrega.estudiante,
             tarea=entrega.asignacion,
             defaults={'nota_final': nota_final}
+        )
+
+        # 🔔 Crear notificación de calificación
+        crear_notificacion(
+            autor=request.user.perfil_docente,
+            tipo='calificacion',
+            descripcion=f"Se calificó un intento de la tarea '{entrega.asignacion.titulo}' del estudiante '{entrega.estudiante.nombres_apellidos}'",
+            entrega=entrega
         )
 
         return redirect('entregas_estudiante_tarea', entrega.asignacion.id, entrega.estudiante.id)
@@ -832,6 +867,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         data['is_superuser'] = self.user.is_superuser
+        data['user_id'] = self.user.id
         return data
     
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -1639,6 +1675,57 @@ class DescargarArchivoAnuncioView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=500)
+
+
+class ListarNotificacionesEstudianteView(APIView):
+    permission_classes = [AllowAny]  
+
+    def get(self, request, estudiante_id):
+        try:
+            estudiante = Estudiante.objects.get(id=estudiante_id)
+
+            entregas = EntregaTarea.objects.filter(estudiante=estudiante)
+            notificaciones = Notificacion.objects.filter(
+                detalle__entrega__in=entregas
+            ).order_by('-fecha_hora')
+
+            resultado = []
+
+            for notif in notificaciones:
+                detalle = notif.detalle
+                tarea = detalle.tarea
+                entrega = detalle.entrega
+
+                resultado.append({
+                    "id": notif.id,
+                    "tipo": notif.tipo,
+                    "descripcion": notif.descripcion,
+                    "fecha": localtime(notif.fecha_hora).strftime('%Y-%m-%d %H:%M:%S'),
+                    "tarea_titulo": tarea.titulo if tarea else None,
+                    "componente": tarea.componente.nombre if tarea else None,
+                    "calificacion": entrega.calificacion if entrega else None,
+                    "intento_numero": entrega.intento_numero if entrega else None
+                })
+
+            return Response(resultado, status=200)
+
+        except Estudiante.DoesNotExist:
+            return Response({"error": "Estudiante no encontrado"}, status=404)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

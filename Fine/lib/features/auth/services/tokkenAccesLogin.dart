@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServiceLogin {
 
@@ -32,11 +33,13 @@ class AuthServiceLogin {
         final String accessToken = data['access'];
         final String refreshToken = data['refresh'];
         final bool isSuperuser = data['is_superuser'] ?? false;
+        final int userId = data['user_id'];
 
         // Almacenar los tokens de forma segura
         await _storage.write(key: 'access_token', value: accessToken);
         await _storage.write(key: 'refresh_token', value: refreshToken);
         await _storage.write(key: 'is_superuser', value: isSuperuser.toString());
+        await saveUserId(userId);
 
         print('Login exitoso! Access Token: $accessToken y es superUsuario = $isSuperuser');
         return true;
@@ -65,6 +68,27 @@ class AuthServiceLogin {
     await _storage.delete(key: 'refresh_token');
     await _storage.delete(key: 'is_superuser');
   }
+
+
+
+
+Future<void> saveUserId(int userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('userId', userId);
+}
+
+Future<int> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  final id = prefs.getInt('userId');
+
+  if (id == null) {
+    throw Exception('ID de usuario no encontrado en SharedPreferences');
+  }
+
+  print('ID cargado desde SharedPreferences: $id');
+  return id;
+}
+
 
 
 

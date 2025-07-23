@@ -6,6 +6,7 @@ from .views import componentes_docente_notas, estudiantes_componente_notas, edit
 from .views import lista_habilitar_notas, info_estudiantes, listado_docentes,login_administrador_view,administrador_redirect,administrador_bienvenida,logout_administrador_view
 from .views import administrador_habilitar_notas, administrador_crear_publicacion   
 from .views import agregar_docente, editar_docente, eliminar_docente
+from .views import ListarNotificacionesEstudianteView
 
 urlpatterns = [
     #flutter
@@ -75,6 +76,8 @@ urlpatterns = [
     path('administrador/agregar_docente/', agregar_docente, name='agregar_docente'),
     path('docentes/<int:docente_id>/editar/', editar_docente, name='editar_docente'),
     path('docentes/<int:docente_id>/eliminar/', eliminar_docente, name='eliminar_docente'),
+    #api-notificaciones
+    path('api/notificaciones/estudiante/<int:estudiante_id>/', ListarNotificacionesEstudianteView.as_view(), name='listar_notificaciones_estudiante'),
 
 
 

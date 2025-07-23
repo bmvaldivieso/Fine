@@ -371,3 +371,27 @@ class ComentarioAnuncio(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.estudiante.nombres_apellidos} en {self.anuncio.titulo}"
+
+#Notificaciones
+class Notificacion(models.Model):
+    TIPO_CHOICES = [
+        ('nueva_tarea', 'Nueva tarea asignada'),
+        ('cambio_fecha', 'Cambio en fecha de entrega'),
+        ('calificacion', 'Calificación de intento'),
+    ]
+
+    autor = models.ForeignKey('Docente', on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    fecha_hora = models.DateTimeField(default=timezone.now)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return f"Notificación {self.id} - {self.tipo}"
+
+class DetalleNotificacion(models.Model):
+    notificacion = models.OneToOneField(Notificacion, on_delete=models.CASCADE, related_name='detalle')
+    tarea = models.ForeignKey('AsignacionTarea', on_delete=models.CASCADE, null=True, blank=True)
+    entrega = models.ForeignKey('EntregaTarea', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"Detalle de notificación {self.notificacion.id}"

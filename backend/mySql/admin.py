@@ -17,6 +17,8 @@ admin.site.register(ImagenAnuncio)
 admin.site.register(ComentarioAnuncio)
 admin.site.register(PublicacionNotas)
 admin.site.register(Administrador)
+admin.site.register(Notificacion)
+admin.site.register(DetalleNotificacion)
 
 #admin.site.register(AsignacionTarea)
 @admin.register(AsignacionTarea)
