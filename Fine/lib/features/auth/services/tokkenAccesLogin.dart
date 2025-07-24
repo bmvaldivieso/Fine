@@ -34,12 +34,14 @@ class AuthServiceLogin {
         final String refreshToken = data['refresh'];
         final bool isSuperuser = data['is_superuser'] ?? false;
         final int userId = data['user_id'];
+        final int estudianteId = data['estudiante_id'];
 
         // Almacenar los tokens de forma segura
         await _storage.write(key: 'access_token', value: accessToken);
         await _storage.write(key: 'refresh_token', value: refreshToken);
         await _storage.write(key: 'is_superuser', value: isSuperuser.toString());
         await saveUserId(userId);
+        await saveUserId(estudianteId);
 
         print('Login exitoso! Access Token: $accessToken y es superUsuario = $isSuperuser');
         return true;

@@ -17,11 +17,10 @@
 
     <div class="col-12 col-md-5 bg-overlay d-flex align-items-center justify-content-center">
 
-      <img src="static/images/logo2.png" alt="Logo Cámara" class="logo-ccl" />
-
-
       <div class="login-form-card position-relative">
         <div class="text-center mb-4">
+          <img src="static/img/logo2.png" alt="Logo FINE" class="logo-ccl" />
+          <hr>
           <h1 class="mb-1 fw-bold text-white">Iniciar Sesión</h1>
         </div>
         <br />
@@ -39,6 +38,9 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
           <p class="mb-0 text-white">¿No tienes una cuenta?</p>
           <a href="/register" class="enlace-azul fw-bold">Regístrate ahora</a>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <a href="{% url 'administrador_login' %}" class="enlace-azul fw-bold">Administrador</a>
         </div>
       </div>
     </div>

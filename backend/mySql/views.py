@@ -868,6 +868,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['is_superuser'] = self.user.is_superuser
         data['user_id'] = self.user.id
+
+        try:
+            estudiante = Estudiante.objects.get(user=self.user)
+            data['estudiante_id'] = estudiante.id
+        except Estudiante.DoesNotExist:
+            data['estudiante_id'] = None
+
         return data
     
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -1678,20 +1685,23 @@ class DescargarArchivoAnuncioView(APIView):
 
 
 class ListarNotificacionesEstudianteView(APIView):
-    permission_classes = [AllowAny]  
+    permission_classes = [AllowAny]
 
     def get(self, request, estudiante_id):
         try:
             estudiante = Estudiante.objects.get(id=estudiante_id)
 
-            entregas = EntregaTarea.objects.filter(estudiante=estudiante)
-            notificaciones = Notificacion.objects.filter(
-                detalle__entrega__in=entregas
-            ).order_by('-fecha_hora')
-
             resultado = []
 
-            for notif in notificaciones:
+            # Entregas del estudiante
+            entregas = EntregaTarea.objects.filter(estudiante=estudiante)
+
+            # Notificaciones vinculadas a entregas
+            notifs_entregas = Notificacion.objects.filter(
+                detalle__entrega__in=entregas
+            ).select_related('detalle__tarea', 'detalle__entrega').order_by('-fecha_hora')
+
+            for notif in notifs_entregas:
                 detalle = notif.detalle
                 tarea = detalle.tarea
                 entrega = detalle.entrega
@@ -1707,11 +1717,42 @@ class ListarNotificacionesEstudianteView(APIView):
                     "intento_numero": entrega.intento_numero if entrega else None
                 })
 
+            # Componentes en los que está matriculado
+            componentes = Matricula.objects.filter(
+                estudiante=estudiante,
+                activa=True,
+                estado__in=['activa', 'confirmada']
+            ).values_list('componente_cursado', flat=True)
+
+            # Notificaciones por tarea sin entrega asociada
+            notifs_tareas = Notificacion.objects.filter(
+                tipo__in=['nueva_tarea', 'cambio_fecha'],
+                detalle__tarea__componente__in=componentes,
+                detalle__entrega__isnull=True  # Asegura que no tenga entrega
+            ).select_related('detalle__tarea').order_by('-fecha_hora')
+
+            for notif in notifs_tareas:
+                detalle = notif.detalle
+                tarea = detalle.tarea
+
+                resultado.append({
+                    "id": notif.id,
+                    "tipo": notif.tipo,
+                    "descripcion": notif.descripcion,
+                    "fecha": localtime(notif.fecha_hora).strftime('%Y-%m-%d %H:%M:%S'),
+                    "tarea_titulo": tarea.titulo if tarea else None,
+                    "componente": tarea.componente.nombre if tarea else None,
+                    "calificacion": None,
+                    "intento_numero": None
+                })
+
+            # Ordenar todas las notificaciones combinadas por fecha
+            resultado.sort(key=lambda x: x['fecha'], reverse=True)
+
             return Response(resultado, status=200)
 
         except Estudiante.DoesNotExist:
             return Response({"error": "Estudiante no encontrado"}, status=404)
-
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 

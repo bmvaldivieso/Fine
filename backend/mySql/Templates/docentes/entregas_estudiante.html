@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}Entregas de {{ estudiante.nombres_apellidos }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tablasccs.css' %}">
+{% endblock %}
+
 {% block admin_content %}
 <div class="container mt-4">
   <h2>Entregas de <strong>{{ estudiante.nombres_apellidos }}</strong></h2>

@@ -3,6 +3,10 @@
 
 {% block title %}Editar Notas - {{ estudiante.usuario.get_full_name }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tablasccs.css' %}">
+{% endblock %}
+
 {% block admin_content %}
 <div class="container mt-4">
     <h2 class="mb-4">Editar notas: <strong>{{ estudiante.usuario.get_full_name }}</strong></h2>
@@ -54,6 +58,7 @@
             Cancelar
         </a>
     </form>
+    <hr>
 </div>
 {% endblock %}
 

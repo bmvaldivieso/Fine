@@ -125,7 +125,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$600000$qKjbQzyS0oldFRxQU1QK9N$/YcAYGYgmk/jvL8g7/V7BS7JqV/abelO4LVyf702/hY=','2025-07-23 05:09:36.503272',1,'byron','','','bmvaldivieso@utpl.edu.ec',1,1,'2025-07-11 19:58:07.000000'),(2,'pbkdf2_sha256$600000$w80OGepJFzx0WQ3nAFCElG$Txpf4VL1lt0AMvSiXVHMeXtxm4BGl5QSbzBHVD4jmkc=',NULL,0,'bmvaldivieso','','','bmvaldivieso@gmail.com',0,1,'2025-07-11 21:54:21.292401'),(3,'pbkdf2_sha256$600000$9MUDyjUgDhfKYN8usxfHJJ$6ERdHFkNy/wayzeidvVfp+ly6a7sIt3QAzX63MqMhfM=','2025-07-23 05:08:27.920027',0,'rojasf','','','rojas@gmail.com',0,1,'2025-07-13 20:16:07.000000'),(4,'pbkdf2_sha256$600000$jFSVpxLcHebAgw57MgDQE3$JZ2ObjvjpLIfJkQblAHQXQm79g9brtwTDR6c5GkU4lE=',NULL,0,'carlos','','','',0,1,'2025-07-14 23:28:59.898905');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$600000$qKjbQzyS0oldFRxQU1QK9N$/YcAYGYgmk/jvL8g7/V7BS7JqV/abelO4LVyf702/hY=','2025-07-24 02:24:20.109269',1,'byron','','','bmvaldivieso@utpl.edu.ec',1,1,'2025-07-11 19:58:07.000000'),(2,'pbkdf2_sha256$600000$w80OGepJFzx0WQ3nAFCElG$Txpf4VL1lt0AMvSiXVHMeXtxm4BGl5QSbzBHVD4jmkc=',NULL,0,'bmvaldivieso','','','bmvaldivieso@gmail.com',0,1,'2025-07-11 21:54:21.292401'),(3,'pbkdf2_sha256$600000$9MUDyjUgDhfKYN8usxfHJJ$6ERdHFkNy/wayzeidvVfp+ly6a7sIt3QAzX63MqMhfM=','2025-07-24 00:53:18.961891',0,'rojasf','','','rojas@gmail.com',0,1,'2025-07-13 20:16:07.000000'),(4,'pbkdf2_sha256$600000$jFSVpxLcHebAgw57MgDQE3$JZ2ObjvjpLIfJkQblAHQXQm79g9brtwTDR6c5GkU4lE=',NULL,0,'carlos','','','',0,1,'2025-07-14 23:28:59.898905');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +294,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('0rx3sl7n26jt2h0bpfoqjuc8hqhwuud2','.eJxVjEEOgjAQRe_StWk6hcKMS_ecoZlpi0VNSSisjHcXEha6fe_9_1aetzX7rabFT1FdFajLLxMOz1QOER9c7rMOc1mXSfSR6NNWPcwxvW5n-3eQueZ9LTRG6oCCbZJg64yzvSMDY2eFJAExUItIaAT7xhkMAUQEjd0hsFWfL8OsNsc:1ueRjU:MtFTRI9kj5eS3lAdeOWv8oe-IUL2bvhaCYWMS1PfkI4','2025-08-06 05:09:36.505785'),('bu4v34akj68kkfiyayvv377oc6t2yqtr','.eJxVjEEOgjAQRe_StWk6hcKMS_ecoZlpi0VNSSisjHcXEha6fe_9_1aetzX7rabFT1FdFajLLxMOz1QOER9c7rMOc1mXSfSR6NNWPcwxvW5n-3eQueZ9LTRG6oCCbZJg64yzvSMDY2eFJAExUItIaAT7xhkMAUQEjd0hsFWfL8OsNsc:1ubQC8:pVXgTdOp3nfXpdn30-nCjk5ttAWZy3HTpdC5sImIc-I','2025-07-28 20:54:40.945717'),('ksumfm6nzd8fnesbwha7l4z0d0oolaru','.eJxVjMsOwiAQRf-FtSEgw0xx6d5vIMOjUjWQlHZl_HdD0oVu7znnvoXnfSt-73n1SxIXYcTpdwscn7kOkB5c703GVrd1CXIo8qBd3lrKr-vh_h0U7mXUhKgpuzBbnIjs2ThNE4CKBrJGFRxnDsmBAQKGmTBY5sgakJRRKD5fvmg27Q:1udKUA:CfDGUn8m7wNhL1erPL2QvneCjWe2k8BwcFA6VRKoNQ4','2025-08-03 03:13:10.750885');
+INSERT INTO `django_session` VALUES ('bu4v34akj68kkfiyayvv377oc6t2yqtr','.eJxVjEEOgjAQRe_StWk6hcKMS_ecoZlpi0VNSSisjHcXEha6fe_9_1aetzX7rabFT1FdFajLLxMOz1QOER9c7rMOc1mXSfSR6NNWPcwxvW5n-3eQueZ9LTRG6oCCbZJg64yzvSMDY2eFJAExUItIaAT7xhkMAUQEjd0hsFWfL8OsNsc:1ubQC8:pVXgTdOp3nfXpdn30-nCjk5ttAWZy3HTpdC5sImIc-I','2025-07-28 20:54:40.945717'),('ksumfm6nzd8fnesbwha7l4z0d0oolaru','.eJxVjMsOwiAQRf-FtSEgw0xx6d5vIMOjUjWQlHZl_HdD0oVu7znnvoXnfSt-73n1SxIXYcTpdwscn7kOkB5c703GVrd1CXIo8qBd3lrKr-vh_h0U7mXUhKgpuzBbnIjs2ThNE4CKBrJGFRxnDsmBAQKGmTBY5sgakJRRKD5fvmg27Q:1udKUA:CfDGUn8m7wNhL1erPL2QvneCjWe2k8BwcFA6VRKoNQ4','2025-08-03 03:13:10.750885');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -415,7 +415,7 @@ CREATE TABLE `mysql_asignaciontarea` (
   CONSTRAINT `mySql_asignaciontare_componente_id_45c9b20e_fk_mySql_com` FOREIGN KEY (`componente_id`) REFERENCES `mysql_componente` (`id`),
   CONSTRAINT `mySql_asignaciontarea_docente_id_6cf4992c_fk_mySql_docente_id` FOREIGN KEY (`docente_id`) REFERENCES `mysql_docente` (`id`),
   CONSTRAINT `mysql_asignaciontarea_chk_1` CHECK ((`intentos_maximos` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +424,7 @@ CREATE TABLE `mysql_asignaciontarea` (
 
 LOCK TABLES `mysql_asignaciontarea` WRITE;
 /*!40000 ALTER TABLE `mysql_asignaciontarea` DISABLE KEYS */;
-INSERT INTO `mysql_asignaciontarea` VALUES (1,'Tarea1','Subir archivos.','2025-08-07 18:00:00.000000',2,1,1,1),(2,'Tarea 2','Subir los archivos correspondientes.','2025-07-24 18:00:00.000000',3,1,1,1),(5,'Tarea 1','H','2025-07-29 12:00:00.000000',2,1,2,1),(7,'Tarea 3','hola','2025-07-27 12:00:00.000000',2,1,1,1);
+INSERT INTO `mysql_asignaciontarea` VALUES (1,'Tarea1','Subir archivos.','2025-08-07 18:00:00.000000',2,1,1,1),(2,'Tarea 2','Subir los archivos correspondientes.','2025-07-24 18:00:00.000000',3,1,1,1),(5,'Tarea 1','H','2025-07-29 12:00:00.000000',2,1,2,1),(7,'Tarea 3','hola','2025-07-27 12:00:00.000000',2,1,1,1),(8,'Tarea 4','Subir archivo.','2025-08-06 12:00:00.000000',2,1,1,1);
 /*!40000 ALTER TABLE `mysql_asignaciontarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,7 +446,7 @@ CREATE TABLE `mysql_calificacionfinaltarea` (
   KEY `mySql_calificacionfi_tarea_id_8a734574_fk_mySql_asi` (`tarea_id`),
   CONSTRAINT `mySql_calificacionfi_estudiante_id_8c8a405f_fk_mySql_est` FOREIGN KEY (`estudiante_id`) REFERENCES `mysql_estudiante` (`id`),
   CONSTRAINT `mySql_calificacionfi_tarea_id_8a734574_fk_mySql_asi` FOREIGN KEY (`tarea_id`) REFERENCES `mysql_asignaciontarea` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,7 +455,7 @@ CREATE TABLE `mysql_calificacionfinaltarea` (
 
 LOCK TABLES `mysql_calificacionfinaltarea` WRITE;
 /*!40000 ALTER TABLE `mysql_calificacionfinaltarea` DISABLE KEYS */;
-INSERT INTO `mysql_calificacionfinaltarea` VALUES (1,9,'2025-07-23 05:09:21.684472',1,1),(2,0,'2025-07-19 23:36:43.499102',1,7);
+INSERT INTO `mysql_calificacionfinaltarea` VALUES (1,9,'2025-07-23 05:09:21.684472',1,1),(2,0,'2025-07-19 23:36:43.499102',1,7),(3,0,'2025-07-23 19:07:49.035818',1,8);
 /*!40000 ALTER TABLE `mysql_calificacionfinaltarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -603,7 +603,7 @@ CREATE TABLE `mysql_detallenotificacion` (
   CONSTRAINT `mySql_detallenotific_entrega_id_87180b02_fk_mySql_ent` FOREIGN KEY (`entrega_id`) REFERENCES `mysql_entregatarea` (`id`),
   CONSTRAINT `mySql_detallenotific_notificacion_id_bda8aeb5_fk_mySql_not` FOREIGN KEY (`notificacion_id`) REFERENCES `mysql_notificacion` (`id`),
   CONSTRAINT `mySql_detallenotific_tarea_id_f6878809_fk_mySql_asi` FOREIGN KEY (`tarea_id`) REFERENCES `mysql_asignaciontarea` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -612,7 +612,7 @@ CREATE TABLE `mysql_detallenotificacion` (
 
 LOCK TABLES `mysql_detallenotificacion` WRITE;
 /*!40000 ALTER TABLE `mysql_detallenotificacion` DISABLE KEYS */;
-INSERT INTO `mysql_detallenotificacion` VALUES (1,NULL,1,1),(2,16,2,1);
+INSERT INTO `mysql_detallenotificacion` VALUES (1,NULL,1,1),(2,16,2,1),(3,NULL,3,8);
 /*!40000 ALTER TABLE `mysql_detallenotificacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -848,7 +848,7 @@ CREATE TABLE `mysql_notificacion` (
   PRIMARY KEY (`id`),
   KEY `mySql_notificacion_autor_id_6d5d333b_fk_mySql_docente_id` (`autor_id`),
   CONSTRAINT `mySql_notificacion_autor_id_6d5d333b_fk_mySql_docente_id` FOREIGN KEY (`autor_id`) REFERENCES `mysql_docente` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -857,7 +857,7 @@ CREATE TABLE `mysql_notificacion` (
 
 LOCK TABLES `mysql_notificacion` WRITE;
 /*!40000 ALTER TABLE `mysql_notificacion` DISABLE KEYS */;
-INSERT INTO `mysql_notificacion` VALUES (1,'cambio_fecha','2025-07-23 02:52:25.948572','La fecha de entrega de la tarea \'Tarea1\' fue modificada.',1),(2,'calificacion','2025-07-23 05:09:21.687973','Se calificó un intento de la tarea \'Tarea1\' del estudiante \'Byron Marcelo Valdivieso Paucar\'',1);
+INSERT INTO `mysql_notificacion` VALUES (1,'cambio_fecha','2025-07-23 02:52:25.948572','La fecha de entrega de la tarea \'Tarea1\' fue modificada.',1),(2,'calificacion','2025-07-23 05:09:21.687973','Se calificó un intento de la tarea \'Tarea1\' del estudiante \'Byron Marcelo Valdivieso Paucar\'',1),(3,'nueva_tarea','2025-07-23 19:07:49.037795','Se ha creado la tarea \'Tarea 4\' en el componente \'A1.1 English Express 1\'',1);
 /*!40000 ALTER TABLE `mysql_notificacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -940,4 +940,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-23  0:39:31
+-- Dump completed on 2025-07-23 21:59:19

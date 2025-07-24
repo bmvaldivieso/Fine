@@ -51,9 +51,9 @@ class _HomeworkViewState extends State<HomeworkView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F3FA),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       appBar: AppBar(
-        title: const Text('📚 Mis Tareas'),
+        title: const Text('📖 Mis Tareas'),
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
         titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
@@ -98,7 +98,18 @@ class _HomeworkViewState extends State<HomeworkView> {
                               final homeController = Get.find<HomeController>();
                               homeController.goToSubmitHomeworkInterno(tarea);
                             },
-                            child: Padding(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFF93EB),
+                                    Color(0xFFA555EA)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 18),
                               child: Column(
@@ -106,16 +117,22 @@ class _HomeworkViewState extends State<HomeworkView> {
                                 children: [
                                   Row(
                                     children: [
-                                      const Icon(Icons.assignment_turned_in,
-                                          color: Color(0xFF2042A6)),
                                       const SizedBox(width: 10),
-                                      Expanded(
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFF0150),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
                                         child: Text(
                                           tarea['titulo'] ?? 'Sin título',
                                           style: const TextStyle(
-                                            fontSize: 17,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Color(0xFF2042A6),
+                                            color: Colors
+                                                .white, // Color blanco para contraste
                                           ),
                                         ),
                                       ),
@@ -125,13 +142,13 @@ class _HomeworkViewState extends State<HomeworkView> {
                                   Row(
                                     children: [
                                       const Icon(Icons.calendar_today_outlined,
-                                          size: 18, color: Colors.grey),
+                                          size: 18, color: Colors.white),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Fecha límite: ${formatearFecha(tarea['fecha_entrega'])}',
                                         style: const TextStyle(
                                           fontSize: 14,
-                                          color: Colors.black87,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ],
@@ -140,7 +157,7 @@ class _HomeworkViewState extends State<HomeworkView> {
                                   Row(
                                     children: [
                                       const Icon(Icons.info_outline,
-                                          size: 18, color: Colors.grey),
+                                          size: 18, color: Colors.white),
                                       const SizedBox(width: 6),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
@@ -171,13 +188,15 @@ class _HomeworkViewState extends State<HomeworkView> {
                                         Row(
                                           children: [
                                             const Icon(Icons.grade,
-                                                size: 18, color: Colors.grey),
+                                                size: 18,
+                                                color: Color.fromARGB(
+                                                    255, 124, 228, 97)),
                                             const SizedBox(width: 6),
                                             Text(
                                               'Nota final: ${notaFinal.toString()}',
                                               style: const TextStyle(
                                                 fontSize: 14,
-                                                color: Colors.black87,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -201,7 +220,7 @@ class _HomeworkViewState extends State<HomeworkView> {
                                       label: const Text("Ver detalles"),
                                       style: TextButton.styleFrom(
                                         foregroundColor:
-                                            const Color(0xFF2042A6),
+                                            const Color.fromARGB(255, 255, 227, 90),
                                       ),
                                     ),
                                   )

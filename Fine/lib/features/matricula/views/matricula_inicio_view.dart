@@ -44,7 +44,7 @@ class MatriculaInicioView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.school, size: screenWidth * 0.15, color: const Color(0xFF2042A6)),
+              Icon(Icons.school, size: screenWidth * 0.15, color: const Color(0xFFFF0150)),
               const SizedBox(height: 20),
               Text(
                 '¿Listo para comenzar tu matrícula?',
@@ -61,7 +61,7 @@ class MatriculaInicioView extends StatelessWidget {
                 icon: const Icon(Icons.check, color: Colors.white),
                 label: const Text('Iniciar Matrícula', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2042A6),
+                  backgroundColor: const Color(0xFFFF0150),
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),

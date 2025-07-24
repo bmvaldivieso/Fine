@@ -151,8 +151,9 @@ class _DetalleCursoViewState extends State<DetalleCursoView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Resumen de Curso'),
+        title: const Text('Resumen de Curso', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF2042A6),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: 20),

@@ -3,6 +3,10 @@
 
 {% block title %}Editar anuncio - {{ anuncio.titulo }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tablasccs.css' %}">
+{% endblock %}
+
 {% block admin_content %}
 <div class="container mt-4">
     <h2 class="mb-4">Editar anuncio: <strong>{{ anuncio.titulo }}</strong></h2>
@@ -93,6 +97,7 @@
         </button>
         <a href="{% url 'anuncios_por_componente' anuncio.componente.id %}" class="btn btn-secondary ms-2">Cancelar</a>
     </form>
+    <hr>
 </div>
 {% endblock %}
 

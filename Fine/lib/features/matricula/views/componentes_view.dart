@@ -45,12 +45,13 @@ class _ComponentesViewState extends State<ComponentesView> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F5FC),
+      backgroundColor: const Color(0xFF7F96E4),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2042A6),
         elevation: 2,
         title: const Text('Selecciona tu paralelo', style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _loading
           ? const Center(

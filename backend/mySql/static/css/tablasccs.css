@@ -1,0 +1,91 @@
+.btn.btn-sm.btn-primary {
+    color: white;
+    background-color: #E62055;
+    border-color: #E62055;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #E62055;
+    color: white !important;
+    border-radius: 4px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #E62055;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #E62055;
+}
+
+.dataTables_wrapper .dataTables_info {
+    color: #E62055;
+}
+
+#tabla-componentes thead {
+    background-color: #E62055;
+    color: white;
+}
+
+.dataTables_wrapper .dataTables_length label {
+    color: #E62055;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    background-color: #E62055;
+    color: white;
+    border: 1px solid #E62055;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #E62055;
+    color: white !important;
+    border: none;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #E62055;
+    color: white !important;
+}
+
+.table-striped thead {
+    border: 1px solid #E62055;
+}
+
+.dataTables_empty {
+    color: #E62055;
+    font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_filter label {
+    color: #E62055;
+}
+
+#tabla-componentes tbody tr {
+    background-color: #fff;
+    /* o #f9f9f9 para un tono más suave */
+    color: #212529;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #ba1d47;
+    color: white !important;
+}
+
+.active .page-link {
+    color: white !important;
+    background-color: #E62055 !important;
+    border-color: #E62055 !important;
+}
+
+.btn-primary {
+    background-color: #E62055 !important;
+    border-color: #E62055 !important;
+}
+  

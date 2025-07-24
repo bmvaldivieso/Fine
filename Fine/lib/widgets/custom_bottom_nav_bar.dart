@@ -35,14 +35,14 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: ImageIcon(
               AssetImage('lib/assets/icons/ho.png'),
-              size: 40,
+              size: 45,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(
               AssetImage('lib/assets/icons/cur.png'),
-              size: 40,
+              size: 50,
             ),
             label: '',
           ),
@@ -57,7 +57,7 @@ class CustomBottomNavBar extends StatelessWidget {
           icon: Center(
             child: ImageIcon(
               AssetImage('lib/assets/icons/re.png'),
-              size: 40,
+              size: 45,
             ),
           ),
           label: '',

@@ -9,7 +9,7 @@ body {
 
 .sidebar-admin {
     width: 280px;
-    background-color: #3D36BF;
+    background-color: #E62055;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
@@ -73,7 +73,7 @@ body {
 .sidebar-admin .nav-links .nav-item:hover,
 .sidebar-admin .nav-links .nav-item.active {
     background-color: white;
-    color: #3D36BF !important;
+    color: #E62055 !important;
     border-left: none;
     padding-left: 2.5rem;
 }
@@ -86,7 +86,7 @@ body {
 }
 
 .sidebar-admin .nav-links .nav-item.active i {
-    color: #3D36BF;
+    color: #E62055;
 }
 
 .sidebar-admin .login-button-container {
@@ -96,7 +96,7 @@ body {
 }
 
 .sidebar-admin .login-button-container .btn-login {
-    background-color: #3D36BF;
+    background-color: #E62055;
     border-color: white;
     color: white;
     font-weight: 600;
@@ -112,7 +112,7 @@ body {
 
 .sidebar-admin .login-button-container .btn-login:hover {
     background-color: white;
-    color: #3D36BF;
+    color: #E62055;
 }
 
 .sidebar-admin .login-button-container .btn-login i {
@@ -122,7 +122,7 @@ body {
 }
 
 .sidebar-admin .login-button-container .btn-login:hover i {
-    color: #3D36BF;
+    color: #E62055;
 }
 
 .main-content-admin {
@@ -139,7 +139,7 @@ body {
 }
 
 .main-content-admin .top-bar-admin {
-    background-color: #3D36BF;
+    background-color: #E62055;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -292,7 +292,7 @@ body {
 
 .footer-admin {
     width: 100%;
-    background-color: #3D36BF;
+    background-color: #E62055;
     color: white;
     text-align: center;
     padding: 1rem 0;
@@ -310,4 +310,9 @@ body {
     padding: 2rem;
     max-height: calc(100vh - 120px); 
   }
-  
+ 
+.logo-section img {
+    width: 260px;
+    height: auto;
+  }
+    

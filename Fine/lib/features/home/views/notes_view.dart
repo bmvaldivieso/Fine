@@ -11,9 +11,6 @@ import '../../../core/services/service_MatriculaValidate.dart';
 import '../controllers/home_Controller.dart';
 import 'package:get/get.dart';
 
-
-
-
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
 
@@ -55,6 +52,7 @@ class _NotesViewState extends State<NotesView> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (!mounted) return;
         setState(() => nombreEstudiante = data['nombres_apellidos']);
       } else {
         print('Error al obtener nombre: ${response.statusCode}');
@@ -69,6 +67,7 @@ class _NotesViewState extends State<NotesView> {
       final token = await AuthServiceLogin().getAccessToken();
       final resultado = await NotasService().obtenerNotas(token!);
 
+      if (!mounted) return;
       setState(() {
         notasPorComponente = resultado;
         componentesDisponibles = resultado.keys.toList();
@@ -80,6 +79,7 @@ class _NotesViewState extends State<NotesView> {
       });
     } catch (e) {
       print('Error al cargar notas: $e');
+      if (!mounted) return;
       setState(() => cargando = false);
     }
   }
@@ -94,6 +94,7 @@ class _NotesViewState extends State<NotesView> {
     final inasistencias =
         notas.fold<int>(0, (total, n) => total + n.inasistencias);
 
+    if (!mounted) return;
     setState(() {
       notasActuales = notas;
       notaFinal = promedio.toDouble();
@@ -101,8 +102,7 @@ class _NotesViewState extends State<NotesView> {
     });
   }
 
-  //bloqueo matricula
-   void _verificarMatricula() async {
+  void _verificarMatricula() async {
     final authService = MatService();
     bool resultado = await authService.validarMatricula();
     if (!mounted) return;
@@ -111,20 +111,20 @@ class _NotesViewState extends State<NotesView> {
         _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
       });
     } else {
+      if (!mounted) return;
       setState(() {
         _tieneMatricula = true;
         _cargando = false;
       });
     }
   }
-  //aqui
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2FF),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2042A6),
         elevation: 0,

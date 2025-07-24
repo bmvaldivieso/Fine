@@ -171,7 +171,7 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
         DateFormat('dd/MM/yyyy – HH:mm').format(fechaEntrega);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F6FC),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       appBar: AppBar(
         title:
             const Text('Entregar Tarea', style: TextStyle(color: Colors.white)),
@@ -194,7 +194,7 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
               Text(
                 tarea['titulo'] ?? 'Sin título',
                 style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 10),
               Container(
@@ -242,15 +242,31 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: seleccionarArchivos,
-                icon: const Icon(Icons.upload_file, color: Colors.white),
-                label: const Text('Seleccionar archivos',
-                    style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2845B9),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDA70FD), Color(0xFF67DFF7)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: seleccionarArchivos,
+                  icon: const Icon(Icons.upload_file, color: Colors.white),
+                  label: const Text(
+                    'Seleccionar archivos',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent, //
+                    shadowColor: Colors.transparent, //
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
@@ -273,38 +289,44 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
               const SizedBox(height: 16),
               const Text(
                 'Se permiten enlaces',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: enlaceController,
-                decoration: const InputDecoration(
-                  hintText: 'https://ejemplo.com/tarea',
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                ),
-              ),
+  controller: enlaceController,
+  decoration: const InputDecoration(
+    hintText: 'https://ejemplo.com/tarea',
+    border: OutlineInputBorder(),
+    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    filled: true, // ← Esto activa el fondo
+    fillColor: Colors.white, // ← Este es el color de fondo
+  ),
+),
+
               const SizedBox(height: 20),
               cargando
                   ? const Center(child: CircularProgressIndicator())
                   : SizedBox(
                       width: double.infinity,
                       child: Center(
-                        child: ElevatedButton(
-                          onPressed: hayContenido && intentosDisponibles > 0
-                              ? enviarEntrega
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2042A6),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const Text(
-                            '📨 Entregar',
-                            style: TextStyle(
+                        child: SizedBox(
+                          width: 175,
+                          child: ElevatedButton(
+                            onPressed: hayContenido && intentosDisponibles > 0
+                                ? enviarEntrega
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            child: const Text(
+                              'Entregar',
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -325,8 +347,8 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
                         );
                       }
                     },
-                    icon: const Icon(Icons.visibility),
-                    label: const Text('Revisar entrega'),
+                    icon: const Icon(Icons.visibility, color: Colors.white),
+                    label: const Text('Revisar entrega', style: TextStyle(color: Colors.white)),
                   ),
                 )
               ]
