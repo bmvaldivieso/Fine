@@ -169,10 +169,6 @@ class Matricula(models.Model):
 
 
 
-
-
-
-
 # Calificaciones
 class Nota(models.Model):
     BIMESTRES = [(1, 'Primer Bimestre'), (2, 'Segundo Bimestre')]

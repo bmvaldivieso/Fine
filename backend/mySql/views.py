@@ -1759,6 +1759,44 @@ class ListarNotificacionesEstudianteView(APIView):
 
 
 
+# Matricula Componente nombre
+class MatriculaComponenteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            # Buscar el perfil del estudiante vinculado al usuario autenticado
+            estudiante = Estudiante.objects.get(user=request.user)
+
+            # Buscar matrícula activa asociada al estudiante
+            matricula = Matricula.objects.filter(estudiante=estudiante, activa=True).first()
+
+            if not matricula or not matricula.componente_cursado:
+                return Response(
+                    {"mensaje": "No se encontró matrícula activa ni componente asociado."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            componente_nombre = matricula.componente_cursado.nombre
+            return Response(
+                {"componente": componente_nombre},
+                status=status.HTTP_200_OK
+            )
+
+        except Estudiante.DoesNotExist:
+            return Response(
+                {"error": "Estudiante no encontrado para el usuario actual."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Ocurrió un error: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+
+
 
 
 

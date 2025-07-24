@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:lms_english_app/core/models/notification_model.dart';
 import 'package:lms_english_app/core/services/notification_service.dart';
+import 'package:lms_english_app/core/services/service_MatriculaValidate.dart';
 import 'package:lms_english_app/features/home/controllers/home_Controller.dart';
 
 class NotificacionesPage extends StatefulWidget {
@@ -15,11 +16,32 @@ class NotificacionesPage extends StatefulWidget {
 
 class _NotificacionesPageState extends State<NotificacionesPage> {
   late Future<List<NotificationModel>> _futureNotificaciones;
+  final _homeController = Get.find<HomeController>();
+  bool _tieneMatricula = false;
+  bool _cargando = true;
 
   @override
   void initState() {
     super.initState();
     _futureNotificaciones = NotificationService().fetchNotifications();
+    _verificarMatricula();
+  }
+
+  void _verificarMatricula() async {
+    final authService = MatService();
+    bool resultado = await authService.validarMatricula();
+    if (!mounted) return;
+    if (!resultado) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+      });
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _tieneMatricula = true;
+        _cargando = false;
+      });
+    }
   }
 
   String formatearFecha(String fechaOriginal) {

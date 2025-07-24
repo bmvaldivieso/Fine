@@ -146,6 +146,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     textCancel: 'Cancelar',
                     textConfirm: 'Cerrar sesión',
                     confirmTextColor: Colors.white,
+                    buttonColor: const Color(0xFFFF0150),
                     onConfirm: () async {
                       await AuthServiceLogin().cerrarSesion();
                     },

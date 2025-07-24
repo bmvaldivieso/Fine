@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lms_english_app/core/models/anuncio_model.dart';
 import 'package:lms_english_app/core/services/anuncios_service.dart';
+import 'package:lms_english_app/core/services/service_MatriculaValidate.dart';
 import 'package:lms_english_app/features/auth/services/tokkenAccesLogin.dart';
 import 'package:lms_english_app/features/home/views/detalle_anuncio_page.dart';
+import 'package:get/get.dart';
+import 'package:lms_english_app/features/home/controllers/home_Controller.dart';
 
 class ListaAnunciosPage extends StatefulWidget {
   const ListaAnunciosPage({super.key});
@@ -14,11 +17,32 @@ class ListaAnunciosPage extends StatefulWidget {
 
 class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
   late Future<List<Anuncio>> anuncios;
+  final _homeController = Get.find<HomeController>();
+  bool _tieneMatricula = false;
+  bool _cargando = true;
 
   @override
   void initState() {
     super.initState();
     anuncios = cargarAnuncios();
+    _verificarMatricula();
+  }
+
+  void _verificarMatricula() async {
+    final authService = MatService();
+    bool resultado = await authService.validarMatricula();
+    if (!mounted) return;
+    if (!resultado) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _homeController.gotoHomeWithIndex(5, transitionType: 'offAll');
+      });
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _tieneMatricula = true;
+        _cargando = false;
+      });
+    }
   }
 
   Future<List<Anuncio>> cargarAnuncios() async {
