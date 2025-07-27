@@ -65,10 +65,9 @@ class HomeView extends GetView<HomeController> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
-            const Icon(Iconsax.clock, color: Colors.white),
             SizedBox(width: screenWidth * 0.02),
             Text(
-              'Schedule',
+              'Fine-Tuned English',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: screenWidth * 0.05,

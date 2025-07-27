@@ -110,6 +110,16 @@
         Listado de Estudiantes
         {% elif request.resolver_match.url_name == 'editar_nota' %}
         Editar Nota Estudiante
+        {% elif request.resolver_match.url_name == 'editar_anuncio' %}
+        Editar Anuncio
+        {% elif request.resolver_match.url_name == 'crear_anuncio' %}
+        Crear Anuncio
+        {% elif request.resolver_match.url_name == 'eliminar_anuncio' %}
+        Eliminar Anuncio
+        {% elif request.resolver_match.url_name == 'estudiantes_componente_notas' %}
+        Selecionar Estudiante
+        {% elif request.resolver_match.url_name == 'editar_nota_notas' %}
+        Editar Notas Estudiante
         {% else %}
         Contenido
         {% endif %}

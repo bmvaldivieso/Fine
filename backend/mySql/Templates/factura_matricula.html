@@ -1,22 +1,65 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
     <title>Factura de Matrícula</title>
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f0f2f5;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .invoice-card {
+        max-width: 600px;
+        margin: 50px auto;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+      }
+      .invoice-header {
+        background-color: #2042A6;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+      }
+      .invoice-body {
+        padding: 25px;
+      }
+      .invoice-body p {
+        margin-bottom: 8px;
+      }
+      .thank-you {
+        background-color: #e8f5e9;
+        border-left: 4px solid #28a745;
+        padding: 10px 15px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
 
-<body>
-    <h2>Factura de Matrícula</h2>
-    <p><strong>Estudiante:</strong> {{ estudiante.nombres_apellidos }}</p>
-    <p><strong>Programa:</strong> {{ componente.get_programa_academico_display }}</p>
-    <p><strong>Curso:</strong> {{ componente.nombre }}</p>
-    <p><strong>Horario:</strong> {{ componente.horario }}</p>
-    <p><strong>Periodo:</strong> {{ componente.periodo }}</p>
-    <p><strong>Fecha de Matrícula:</strong> {{ matricula.fecha_matricula }}</p>
-    <p><strong>Precio:</strong> ${{ componente.precio }}</p>
-    <hr>
-    <p>Gracias por confiar en nosotros. Para cualquier consulta, contáctanos.</p>
-</body>
-
+  <body>
+    <div class="invoice-card">
+      <div class="invoice-header">
+        <h4 class="mb-0">Factura de Matrícula</h4>
+      </div>
+      <div class="invoice-body">
+        <p><strong>👤 Estudiante:</strong> {{ estudiante.nombres_apellidos }}</p>
+        <p><strong>🎓 Programa:</strong> {{ componente.get_programa_academico_display }}</p>
+        <p><strong>📚 Curso:</strong> {{ componente.nombre }}</p>
+        <p><strong>🕒 Horario:</strong> {{ componente.horario }}</p>
+        <p><strong>📅 Periodo:</strong> {{ componente.periodo }}</p>
+        <p><strong>🗓️ Fecha de Matrícula:</strong> {{ matricula.fecha_matricula }}</p>
+        <p><strong>💰 Precio:</strong> ${{ componente.precio }}</p>
+        <hr />
+        <div class="thank-you mt-3">
+          <p>Gracias por confiar en nosotros. Para cualquier consulta, contáctanos.</p>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

@@ -73,7 +73,7 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      backgroundColor: const Color(0xFFF3F6FC),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       body: FutureBuilder<AnuncioDetalle>(
         future: _anuncioFuture,
         builder: (context, snapshot) {
@@ -113,8 +113,9 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
                 const SizedBox(height: 8),
                 Text(
                   fechaFormateada,
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.white),
                 ),
+                Divider(color: Colors.white,),
                 const SizedBox(height: 16),
 
                 if (anuncio.imagenes.isNotEmpty)
@@ -131,21 +132,23 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
 
                 Text(
                   anuncio.contenido,
-                  style: TextStyle(fontSize: screenWidth * 0.045),
+                  style: TextStyle(fontSize: screenWidth * 0.033, color: Colors.white),
+                  textAlign: TextAlign.justify,
                 ),
-
+                const SizedBox(height: 10),
+                Divider(color: Colors.white,),  
                 const SizedBox(height: 30),
 
                 if (enlaces.isNotEmpty) ...[
                   const Text(
-                    '🔗 Enlaces relacionados',
+                    'Enlaces relacionados',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 10),
                   ...enlaces.map(
                     (e) => Card(
                       child: ListTile(
-                        leading: const Icon(Icons.link, color: Colors.green),
+                        leading: const Icon(Icons.link, color: Color(0xFFDA70FD)),
                         title: Text(
                           e.url,
                           style: const TextStyle(
@@ -162,7 +165,7 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
 
                 if (archivosDocumentos.isNotEmpty) ...[
                   const Text(
-                    '📎 Archivos adjuntos',
+                    'Archivos adjuntos',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 10),
@@ -170,7 +173,7 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
                     (archivo) => Card(
                       child: ListTile(
                         leading:
-                            const Icon(Icons.insert_drive_file, color: Colors.blue),
+                            const Icon(Icons.insert_drive_file, color: Color(0xFFFF0150)),
                         title: Text(archivo.nombre),
                         subtitle: Text('Tipo: ${archivo.tipo}'),
                         trailing: Row(

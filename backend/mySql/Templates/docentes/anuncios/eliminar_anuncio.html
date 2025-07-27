@@ -3,6 +3,21 @@
 
 {% block title %}Eliminar anuncio - {{ anuncio.titulo }}{% endblock %}
 
+{% block extra_css %}
+<style>
+  .alert.alert-warning {
+    max-width: 700px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .list-group {
+    max-width: 700px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+</style>
+{% endblock %}
+
 {% block admin_content %}
 <div class="container mt-4">
   <h2 class="mb-4 text-danger">⚠ Confirmación de eliminación</h2>

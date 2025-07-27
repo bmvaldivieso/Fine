@@ -51,9 +51,9 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F6FC),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       appBar: AppBar(
-        title: const Text('📄 Revisar entrega'),
+        title: const Text('Revisar entrega', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -100,9 +100,9 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                             Row(
                               children: [
                                 const Icon(Icons.assignment_turned_in,
-                                    color: Colors.blue),
+                                    color: Color(0xFFFF0150)),
                                 const SizedBox(width: 8),
-                                Text('Intento #${entrega['intento']}',
+                                Text('Intento ${entrega['intento']}',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16)),
@@ -139,7 +139,7 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                             ),
                             const Divider(height: 25),
                             const Text(
-                              '📎 Documentos entregados',
+                              ' Documentos y enlaces entregados:',
                               style: TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 15),
                             ),
@@ -159,7 +159,7 @@ class _ReviewSubmissionViewState extends State<ReviewSubmissionView> {
                                   child: Row(
                                     children: [
                                       const Icon(Icons.insert_drive_file,
-                                          color: Colors.blue),
+                                          color: Color(0xFFFF0150)),
                                       const SizedBox(width: 12),
                                       Expanded(
                                           child: Column(

@@ -810,6 +810,7 @@ def editar_docente(request, docente_id):
     else:
         form = DocenteUserEditForm(instance=docente)
 
+
     return render(request, 'administrador/agregar_docentes/editar_docente.html', {
         'form': form,
         'docente': docente

@@ -9,7 +9,6 @@ import 'package:lms_english_app/features/home/controllers/home_Controller.dart';
 
 class ListaAnunciosPage extends StatefulWidget {
   const ListaAnunciosPage({super.key});
-  
 
   @override
   _ListaAnunciosPageState createState() => _ListaAnunciosPageState();
@@ -61,7 +60,10 @@ class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Anuncios")),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
+      appBar: AppBar(
+          title: Text("Anuncios", style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color(0xFF2042A6)),
       body: FutureBuilder<List<Anuncio>>(
         future: anuncios,
         builder: (context, snapshot) {
@@ -94,11 +96,11 @@ class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.campaign,
-                        color: Colors.blueAccent,
+                        color: Color.fromARGB(255, 51, 221, 51),
                         size: 32,
                       ),
                       const SizedBox(width: 12),
@@ -121,8 +123,8 @@ class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -131,14 +133,27 @@ class _ListaAnunciosPageState extends State<ListaAnunciosPage> {
                             ),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo.shade600,
-                          foregroundColor: Colors.white,
+                        child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
-                          textStyle: const TextStyle(fontSize: 14),
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFDA70FD), Color(0xFFA6C6FF)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            "Detalle",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        child: const Text("Detalle"),
                       )
                     ],
                   ),

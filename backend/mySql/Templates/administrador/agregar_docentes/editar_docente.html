@@ -3,19 +3,115 @@
 
 {% block title %}Editar Docente{% endblock %}
 
-{% block admin_content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Editar Docente: {{ docente.nombres_apellidos }}</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
 
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i> Guardar Cambios
-        </button>
-        <a href="{% url 'listado_docentes' %}" class="btn btn-secondary ms-2">
-            Cancelar
-        </a>
-    </form>
+    .card-header {
+        background-color: #3D36BF;
+        color: white;
+        font-weight: 500;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #343a40;
+    }
+
+    input.form-control,
+    select.form-control,
+    textarea.form-control {
+        border-radius: 0.5rem;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    input.form-control:focus,
+    textarea.form-control:focus,
+    select.form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        outline: none;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    img.img-thumbnail {
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 rounded-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0">Editar Docente: {{ docente.nombres_apellidos }}</h4>
+                </div>
+                <div class="card-body bg-light rounded-bottom-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if docente.imagen_perfil %}
+                        <div class="mb-3 text-center">
+                            <img src="{{ docente.imagen_perfil.url }}" alt="Imagen actual" class="img-thumbnail"
+                                style="max-width: 150px;">
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.username.id_for_label }}">Nombre de
+                                usuario</label>
+                            {{ form.username }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.first_name.id_for_label }}">Nombre</label>
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.last_name.id_for_label }}">Apellido</label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.email.id_for_label }}">Correo electrónico</label>
+                            {{ form.email }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.celular.id_for_label }}">Celular</label>
+                            {{ form.celular }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ form.imagen_perfil.id_for_label }}">Imagen de
+                                perfil</label>
+                            {{ form.imagen_perfil }}
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary me-2 shadow-sm">
+                                <i class="fas fa-save me-1"></i> Guardar Cambios
+                            </button>
+                            <a href="{% url 'listado_docentes' %}" class="btn btn-secondary shadow-sm">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

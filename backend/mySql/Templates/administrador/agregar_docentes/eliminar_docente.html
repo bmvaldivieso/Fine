@@ -3,6 +3,16 @@
 
 {% block title %}Eliminar docente - {{ docente.nombres_apellidos }}{% endblock %}
 
+{% block extra_css %}
+<style>
+  .alert.alert-warning {
+    max-width: 700px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+</style>
+{% endblock %}
+
 {% block admin_content %}
 <div class="container mt-4">
   <h2 class="mb-4 text-danger">⚠ Confirmación de eliminación</h2>
@@ -12,9 +22,9 @@
     <strong>Email:</strong> {{ docente.email }}<br>
     <strong>Celular:</strong> {{ docente.celular }}<br>
     {% if docente.imagen_perfil %}
-      <strong>Foto:</strong> <img src="{{ docente.imagen_perfil.url }}" alt="Foto" width="60">
+    <strong>Foto:</strong> <img src="{{ docente.imagen_perfil.url }}" alt="Foto" width="60">
     {% else %}
-      <strong>Foto:</strong> No registrada
+    <strong>Foto:</strong> No registrada
     {% endif %}
   </div>
 

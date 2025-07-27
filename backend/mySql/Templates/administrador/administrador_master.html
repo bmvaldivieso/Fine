@@ -77,10 +77,32 @@
         Listado de docentes
         {% elif request.resolver_match.url_name == 'administrador_bienvenida' %}
         Bienvenida
+        {% elif request.resolver_match.url_name == 'administrador_habilitar_notas' %}
+        Habilitar notas detalle
+        {% elif request.resolver_match.url_name == 'administrador_crear_publicacion' %}
+        Registrar  Componente Detalle
+        {% elif request.resolver_match.url_name == 'agregar_docente' %}
+        Agregar docente
+        {% elif request.resolver_match.url_name == 'editar_docente' %}
+        Editar docente
+        {% elif request.resolver_match.url_name == 'eliminar_docente' %}
+        Eliminar docente
         {% else %}
         Contenido
         {% endif %}
       </h2>
+
+      <div class="topbar-right-group d-flex align-items-center gap-3">
+        <div class="notification-icon">
+          <i class="far fa-bell"></i>
+        </div>
+        <div class="search-box-admin">
+          <input type="text" placeholder="Buscar" />
+          <div class="search-icon-right">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+      </div>
 
     </div>
 

@@ -1,36 +1,87 @@
 {% extends 'administrador/administrador_master.html' %}
+{% load static %}
 
 {% block title %}Habilitar Notas{% endblock %}
 
+{% block extra_css %}
+<style>
+  .card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .card-header {
+    background-color: #3D36BF;
+    color: white;
+    font-weight: 500;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  input.form-control,
+  select.form-control {
+    border-radius: 0.5rem;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  input.form-control:focus,
+  select.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(25,135,84,0.25);
+    outline: none;
+  }
+
+  .btn-success:hover,
+  .btn-secondary:hover {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  }
+</style>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container mt-4">
-  <h2 class="mb-4">Habilitar publicación de calificaciones para: <strong>{{ componente.nombre }}</strong></h2>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 rounded-4 shadow-sm">
+        <div class="card-header">
+          <h4 class="mb-0">Habilitar publicación de calificaciones para: <strong>{{ componente.nombre }}</strong></h4>
+        </div>
+        <div class="card-body bg-light rounded-bottom-4">
+          <form method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+            <div class="mb-3">
+              <label for="{{ form.habilitado.id_for_label }}" class="form-label">¿Habilitado?</label>
+              {{ form.habilitado }}
+            </div>
 
-    <div class="mb-3">
-      <label for="{{ form.habilitado.id_for_label }}" class="form-label">¿Habilitado?</label>
-      {{ form.habilitado }}
+            <div class="mb-3">
+              <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">Fecha de inicio</label>
+              {{ form.fecha_inicio }}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">Fecha de fin (opcional)</label>
+              {{ form.fecha_fin }}
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-success me-2 shadow-sm">
+                <i class="fas fa-check me-1"></i> Guardar configuración
+              </button>
+              <a href="{% url 'lista_habilitar_notas' %}" class="btn btn-secondary shadow-sm">
+                Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-
-    <div class="mb-3">
-      <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">Fecha de inicio</label>
-      {{ form.fecha_inicio }}
-    </div>
-
-    <div class="mb-3">
-      <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">Fecha de fin (opcional)</label>
-      {{ form.fecha_fin }}
-    </div>
-
-    <button type="submit" class="btn btn-success">
-      <i class="fas fa-check me-1"></i> Guardar configuración
-    </button>
-    <a href="{% url 'lista_habilitar_notas' %}" class="btn btn-secondary ms-2">
-      Cancelar
-    </a>
-  </form>
+  </div>
 </div>
 {% endblock %}

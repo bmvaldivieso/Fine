@@ -5,60 +5,113 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/tablasccs.css' %}">
+<style>
+  .card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-header {
+    background-color: #E62055;
+    color: white;
+    font-weight: 500;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+
+  .nota-calculada {
+    font-size: 0.95rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  input.form-control,
+  textarea.form-control {
+    border-radius: 0.5rem;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  input.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    outline: none;
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-scroll-container {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+</style>
 {% endblock %}
 
 {% block admin_content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Editar notas: <strong>{{ estudiante.usuario.get_full_name }}</strong></h2>
+<div class="container py-2">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <h2 class="mb-4">Editar notas: <strong>{{ estudiante.usuario.get_full_name }}</strong></h2>
 
-    <form method="POST">
+      <form method="POST">
         {% csrf_token %}
         {{ formset.management_form }}
-        {% for form, nota in pares %}
-        {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
 
-        <div class="card mb-4">
+        <div class="card-scroll-container mb-4">
+          {% for form, nota in pares %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+          {% endfor %}
+
+
+          <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <strong>Bimestre {{ forloop.counter }}</strong>
-                <span class="badge bg-success nota-calculada" data-index="{{ forloop.counter0 }}">
-                    Nota calculada: {{ nota.calcular_nota_bimestre }}
-                </span>
+              <strong>Bimestre {{ forloop.counter }}</strong>
+              <span class="badge bg-success nota-calculada" data-index="{{ forloop.counter0 }}">
+                Nota calculada: {{ nota.calcular_nota_bimestre }}
+              </span>
             </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.tareas.id_for_label }}">Tareas</label>
-                    {{ form.tareas|add_class:"nota-input" }}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.lecciones.id_for_label }}">Lecciones</label>
-                    {{ form.lecciones|add_class:"nota-input" }}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.grupales.id_for_label }}">Grupales</label>
-                    {{ form.grupales|add_class:"nota-input" }}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.individuales.id_for_label }}">Individuales</label>
-                    {{ form.individuales|add_class:"nota-input" }}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="{{ form.inasistencias.id_for_label }}">Inasistencias</label>
-                    {{ form.inasistencias }}
-                </div>
+            <div class="card-body bg-light rounded-bottom-4">
+              <div class="mb-3">
+                <label class="form-label" for="{{ form.tareas.id_for_label }}">Tareas</label>
+                {{ form.tareas|add_class:"nota-input form-control" }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="{{ form.lecciones.id_for_label }}">Lecciones</label>
+                {{ form.lecciones|add_class:"nota-input form-control" }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="{{ form.grupales.id_for_label }}">Grupales</label>
+                {{ form.grupales|add_class:"nota-input form-control" }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="{{ form.individuales.id_for_label }}">Individuales</label>
+                {{ form.individuales|add_class:"nota-input form-control" }}
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="{{ form.inasistencias.id_for_label }}">Inasistencias</label>
+                {{ form.inasistencias }}
+              </div>
             </div>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-
-        <button type="submit" class="btn btn-primary">
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2 shadow-sm">
             <i class="fas fa-save me-1"></i> Actualizar Notas
-        </button>
-        <a href="{% url 'estudiantes_componente_notas' componente.id %}" class="btn btn-secondary ms-2">
+          </button>
+          <a href="{% url 'estudiantes_componente_notas' componente.id %}" class="btn btn-secondary shadow-sm">
             Cancelar
-        </a>
-    </form>
-    <hr>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

@@ -78,11 +78,31 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
   Widget construirContenido(NotificationModel notif) {
     final fecha = formatearFecha(notif.fecha);
 
+    Widget encabezado(String texto) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFF0150),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          texto,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+      );
+    }
+
     switch (notif.tipo) {
       case 'cambio_fecha':
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            encabezado('Tarea'),
             Text('📝 ${notif.descripcion}'),
             Text('⏰ Fecha: $fecha'),
           ],
@@ -92,6 +112,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            encabezado('Tarea'),
             Text('📌 Tarea-Calificada: ${notif.tareaTitulo ?? 'Sin título'}'),
             if (notif.calificacion != null)
               Text('⭐ Calificación: ${notif.calificacion}'),
@@ -103,6 +124,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            encabezado('Tarea'),
             Text('📌 Tarea-Creada: ${notif.tareaTitulo ?? 'Sin título'}'),
             Text('⏰ Fecha: $fecha'),
           ],
@@ -112,6 +134,7 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            encabezado('Tarea'),
             Text('📣 ${notif.descripcion}'),
             Text('⏰ Fecha: $fecha'),
           ],
@@ -119,16 +142,23 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     }
   }
 
-   void verNotificacion(NotificationModel notif) {
+  void verNotificacion(NotificationModel notif) {
     final homeController = Get.find<HomeController>();
     homeController.changeTab(8);
-    Get.back(); 
+    Get.back();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('📌 Mis Notificaciones')),
+      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Notificaciones',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF2042A6),
+      ),
       body: FutureBuilder<List<NotificationModel>>(
         future: _futureNotificaciones,
         builder: (context, snapshot) {
@@ -155,24 +185,30 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
 
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 decoration: BoxDecoration(
-                  color: obtenerColor(notif.tipo).withOpacity(0.1),
+                  color: const Color(0xD9FFFFFF),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: obtenerColor(notif.tipo), width: 1.0),
+                  border:
+                      Border.all(color: obtenerColor(notif.tipo), width: 2.0),
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
                       backgroundColor: obtenerColor(notif.tipo),
-                      child: Icon(obtenerIcono(notif.tipo), color: Colors.white),
+                      child:
+                          Icon(obtenerIcono(notif.tipo), color: Colors.white),
                     ),
                     const SizedBox(width: 12),
                     Expanded(child: construirContenido(notif)),
                     TextButton(
                       onPressed: () => verNotificacion(notif),
-                      child: const Text('Ver'),
+                      child: const Text(
+                        'Ver',
+                        style: TextStyle(color: Color(0xFFD9B70D)),
+                      ),
                     ),
                   ],
                 ),

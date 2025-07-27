@@ -194,7 +194,7 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
               Text(
                 tarea['titulo'] ?? 'Sin título',
                 style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               const SizedBox(height: 10),
               Container(

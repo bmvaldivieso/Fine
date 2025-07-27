@@ -1,6 +1,7 @@
 from django import forms
 from .models import AsignacionTarea, Anuncio, Nota, PublicacionNotas, Componente, Docente
 from django.contrib.auth.models import User
+from django.forms import ClearableFileInput
 
 class LoginDocenteForm(forms.Form):
     email = forms.EmailField(
@@ -137,13 +138,16 @@ class DocenteUserEditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=150, required=True, label="Nombre")
     last_name = forms.CharField(max_length=150, required=True, label="Apellido")
     email = forms.EmailField(required=True)
+    imagen_perfil = forms.ImageField(required=False, widget=ClearableFileInput(attrs={
+        'class': 'form-control',
+        'accept': 'image/*'
+    }))
 
     class Meta:
         model = Docente
         fields = ['celular', 'imagen_perfil']
 
     def __init__(self, *args, **kwargs):
-        # Recuperar instancia del Docente si se pasó
         docente = kwargs.get('instance', None)
         super().__init__(*args, **kwargs)
         if docente:

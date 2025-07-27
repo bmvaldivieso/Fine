@@ -1,4 +1,9 @@
 {% extends 'docentes/docente_master.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tablasccs.css' %}">
+{% endblock %}
 
 {% block admin_content %}
   <div class="container">
