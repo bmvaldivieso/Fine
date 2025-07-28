@@ -73,7 +73,7 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
         backgroundColor: const Color(0xFF2042A6),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
+      //backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       body: FutureBuilder<AnuncioDetalle>(
         future: _anuncioFuture,
         builder: (context, snapshot) {
@@ -113,9 +113,9 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
                 const SizedBox(height: 8),
                 Text(
                   fechaFormateada,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                 ),
-                Divider(color: Colors.white,),
+                Divider(color: Colors.black,),
                 const SizedBox(height: 16),
 
                 if (anuncio.imagenes.isNotEmpty)
@@ -132,16 +132,16 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
 
                 Text(
                   anuncio.contenido,
-                  style: TextStyle(fontSize: screenWidth * 0.033, color: Colors.white),
+                  style: TextStyle(fontSize: screenWidth * 0.033, color: Colors.black),
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 10),
-                Divider(color: Colors.white,),  
+                Divider(color: Colors.black,),  
                 const SizedBox(height: 30),
 
                 if (enlaces.isNotEmpty) ...[
                   const Text(
-                    'Enlaces relacionados',
+                    'Enlaces relacionados:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 10),
@@ -165,7 +165,7 @@ class _DetalleAnuncioPageState extends State<DetalleAnuncioPage> {
 
                 if (archivosDocumentos.isNotEmpty) ...[
                   const Text(
-                    'Archivos adjuntos',
+                    'Archivos adjuntos:',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 10),

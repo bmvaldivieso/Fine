@@ -171,7 +171,7 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
         DateFormat('dd/MM/yyyy – HH:mm').format(fechaEntrega);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 137, 160, 236),
+      //backgroundColor: const Color.fromARGB(255, 137, 160, 236),
       appBar: AppBar(
         title:
             const Text('Entregar Tarea', style: TextStyle(color: Colors.white)),
@@ -193,8 +193,10 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
             children: [
               Text(
                 tarea['titulo'] ?? 'Sin título',
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
               const SizedBox(height: 10),
               Container(
@@ -289,20 +291,21 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
               const SizedBox(height: 16),
               const Text(
                 'Se permiten enlaces',
-                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+                style:
+                    TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
               ),
               const SizedBox(height: 8),
               TextField(
-  controller: enlaceController,
-  decoration: const InputDecoration(
-    hintText: 'https://ejemplo.com/tarea',
-    border: OutlineInputBorder(),
-    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-    filled: true, // ← Esto activa el fondo
-    fillColor: Colors.white, // ← Este es el color de fondo
-  ),
-),
-
+                controller: enlaceController,
+                decoration: const InputDecoration(
+                  hintText: 'https://ejemplo.com/tarea',
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  filled: true, // ← Esto activa el fondo
+                  fillColor: Colors.white, // ← Este es el color de fondo
+                ),
+              ),
               const SizedBox(height: 20),
               cargando
                   ? const Center(child: CircularProgressIndicator())
@@ -348,7 +351,11 @@ class _SubmitHomeworkViewState extends State<SubmitHomeworkView> {
                       }
                     },
                     icon: const Icon(Icons.visibility, color: Colors.white),
-                    label: const Text('Revisar entrega', style: TextStyle(color: Colors.white)),
+                    label: const Text('Revisar entrega',
+                        style: TextStyle(color: Colors.white)),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),    
                   ),
                 )
               ]
